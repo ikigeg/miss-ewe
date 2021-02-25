@@ -11,13 +11,15 @@ export const AuthContext = createContext();
 export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthContextProvider = ({ children }) => {
-  const [state, setState] = useState({
+  const [auth, setAuth] = useState({
     user: null,
     access_token: null,
     code: null,
     loading: null,
     error: null,
     loginId: storage.getItem('loginId'),
+    installations: null,
+    installationId: null,
   });
 
   const router = useRouter();
@@ -28,17 +30,20 @@ export const AuthContextProvider = ({ children }) => {
     return loginId;
   };
 
+  const setInstallationId = (installationId) =>
+    setAuth({ ...auth, installationId });
+
   useEffect(() => {
     const search = window.location.search || '';
     const hasCode = search.includes('?code=');
 
     if (hasCode) {
       const params = qs.parse(search);
-      setState({ ...state, loading: true });
+      setAuth({ ...auth, loading: true });
 
       if (params.state !== storage.getItem('loginId')) {
-        setState({
-          ...state,
+        setAuth({
+          ...auth,
           loading: false,
           error: 'Unexpected loginId',
           access_token: null,
@@ -57,30 +62,31 @@ export const AuthContextProvider = ({ children }) => {
       })
         .then((response) => response.json())
         .then(({ access_token, user, installations }) => {
-          console.log(installations);
-          setState({
-            ...state,
+          setAuth({
+            ...auth,
             loading: false,
             error: null,
             access_token,
             user,
             code: params.code,
+            installations,
           });
           router.push('/');
         })
         .catch((error) => {
-          setState({
-            ...state,
+          setAuth({
+            ...auth,
             loading: false,
             error,
             access_token: null,
             user: null,
             code: null,
+            installations: null,
           });
         });
     } else {
-      if (state.user === null) {
-        setState({ ...state, loginId: newLoginId() });
+      if (auth.user === null) {
+        setAuth({ ...auth, loginId: newLoginId() });
       }
     }
   }, []);
@@ -88,7 +94,8 @@ export const AuthContextProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        ...state,
+        ...auth,
+        setInstallationId,
       }}
     >
       {children}
