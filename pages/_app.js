@@ -1,6 +1,7 @@
 import Head from 'flareact/head';
 
 import { AuthContextProvider, AuthContext } from '../context/auth';
+import Header from '../components/Header';
 
 import './_app.scss';
 
@@ -47,7 +48,7 @@ export default function App({ Component, pageProps }) {
                 rel="stylesheet"
               />
             </Head>
-            <h1>Miss Ewe</h1>
+            <Header />
             <Component {...pageProps} {...props} />
           </>
         )}
