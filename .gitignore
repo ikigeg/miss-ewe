@@ -27,3 +27,6 @@ yarn-error.log*
 .env
 
 /worker
+
+_inspo
+scratch
