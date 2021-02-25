@@ -13,7 +13,12 @@
     "prettier": "prettier --write \"**/*.{html,js,json,md,mdx,yml}\""
   },
   "dependencies": {
+    "@conclurer/local-storage-fallback": "^1.0.2",
     "flareact": "^1.1.0",
+    "form-data": "^4.0.0",
+    "lodash": "^4.17.21",
+    "nanoid": "^3.1.20",
+    "querystringify": "^2.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1"
   },
