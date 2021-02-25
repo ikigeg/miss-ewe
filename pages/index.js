@@ -17,18 +17,11 @@ export default function Index({ user, loading, loginId }) {
 
   return (
     <div>
-      <p>
-        Check{' '}
-        <a
-          href={`https://github.com/settings/connections/applications/${CLIENT_ID}`}
-        >
-          app permissions
-        </a>
-      </p>
-
-      <p>you are logged in as {JSON.stringify(user)}</p>
-
-      {/* <Review {...{ user, access_token }} /> */}
+      Hello {user.login}, nice baaa-vatar{' '}
+      <img
+        src={user.avatar_url}
+        style={{ height: '3rem', width: 'auto', borderRadius: '100%' }}
+      />
     </div>
   );
 }

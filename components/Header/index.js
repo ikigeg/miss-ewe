@@ -1,10 +1,16 @@
-import styles from './index.module.scss';
+// import styles from './index.module.scss';
 
 export default function Header() {
   return (
-    <div className={styles.header}>
+    <div>
       <h1>Miss Ewe</h1>
-      <img src="img/missEwe.png" className={styles.logo} />
+      <img
+        src="img/missEwe.png"
+        style={{
+          width: 'auto',
+          maxHeight: '10rem',
+        }}
+      />
     </div>
   );
 }

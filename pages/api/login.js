@@ -9,7 +9,7 @@ export default async (event) => {
   if (method === 'POST' && contentType.includes('application/json')) {
     const jsonBody = await request.json();
 
-    if (!jsonBody.code) {
+    if (!jsonBody.code || !jsonBody.state) {
       return {};
     }
 
@@ -54,6 +54,7 @@ export default async (event) => {
       );
       installations = await installationsReponse.json();
     } catch (err) {
+      console.log('err', err);
       return { err };
     }
 
