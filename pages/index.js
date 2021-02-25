@@ -1,16 +1,6 @@
-import { useEffect } from 'react';
+import { CLIENT_ID, REDIRECT_URI } from '../config';
 
-const REDIRECT_URI = 'http://localhost:8080/authed';
-const CLIENT_ID = 'Iv1.95a7da62ada9504f';
-
-export default function Index({ user, access_token, loading, loginId }) {
-  console.log({ user, access_token, loading, loginId });
-
-  console.log('Index', 1);
-  useEffect(() => {
-    console.log('Index', 2);
-  }, []);
-
+export default function Index({ user, loading, loginId }) {
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -27,7 +17,6 @@ export default function Index({ user, access_token, loading, loginId }) {
 
   return (
     <div>
-      <h1>my-github-issues</h1>
       <p>
         Check{' '}
         <a

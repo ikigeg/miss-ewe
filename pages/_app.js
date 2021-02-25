@@ -2,6 +2,8 @@ import Head from 'flareact/head';
 
 import { AuthContextProvider, AuthContext } from '../context/auth';
 
+import './_app.scss';
+
 export default function App({ Component, pageProps }) {
   return (
     <AuthContextProvider>
