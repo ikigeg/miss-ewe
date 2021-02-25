@@ -21,4 +21,12 @@ module.exports = {
     'react/react-in-jsx-scope': 0,
     'prettier/prettier': 'error',
   },
+  globals: {
+    MISS_EWE_PRIVATE_KEY_1: 'readonly',
+    MISS_EWE_PRIVATE_KEY_2: 'readonly',
+    MISS_EWE_PRIVATE_KEY_3: 'readonly',
+    MISS_EWE_GITHUB_CLIENT_SECRET: 'readonly',
+    MISS_EWE_GITHUB_CLIENT_ID: 'readonly',
+    MISS_EWE_GITHUB_APP_ID: 'readonly',
+  },
 };
