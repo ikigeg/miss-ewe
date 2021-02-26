@@ -3,6 +3,7 @@ import get from 'lodash/get';
 
 import { useAuthContext } from '../../context/auth';
 import queryGithub from '../../utils/queryGithub';
+import Issue from '../Issue';
 
 const query = `
   query OpenIssues($ids: [ID!]!) {
@@ -21,6 +22,7 @@ const query = `
               author {
                 avatarUrl
                 login
+                url
               }
               title
               state
@@ -30,6 +32,7 @@ const query = `
                   node {
                     color
                     name
+                    id
                   }
                   cursor
                 }
@@ -38,16 +41,17 @@ const query = `
                 totalCount
               }
               createdAt
+              body
             }
             cursor
           }
         }
       }
     }
-  }  
+  }
 `;
 
-export default function Issues({ chosenRepos, issues, setIssues }) {
+export default function Issues({ chosenRepos, issues, setIssues, repos }) {
   const { access_token } = useAuthContext();
 
   const [loading, setLoading] = useState(false);
@@ -110,21 +114,25 @@ export default function Issues({ chosenRepos, issues, setIssues }) {
     return <p>Fetching issues</p>;
   }
 
+  const reposById = repos.reduce((acc, cv) => {
+    if (chosenRepos.has(cv.id)) {
+      acc[cv.id] = cv;
+    }
+    return acc;
+  }, {});
+
   return (
     <div>
       <h2>issuues</h2>
       {loading ? <p>Fetching issues</p> : null}
       {!loading && issues && issues.length
         ? issues.map((issue, idx) => (
-            <div
+            <Issue
               key={issue.id}
-              style={{
-                background: idx & 1 ? '#efefef' : 'transparent',
-                marginBottom: '4px',
-              }}
-            >
-              {JSON.stringify(issue)}
-            </div>
+              idx={idx}
+              {...issue}
+              repo={reposById[issue.repoId]}
+            />
           ))
         : null}
     </div>

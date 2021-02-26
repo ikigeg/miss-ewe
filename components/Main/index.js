@@ -31,6 +31,7 @@ export default function Main() {
       {chosenRepos ? (
         <Issues
           {...{
+            repos,
             chosenRepos,
             issues,
             setIssues,
