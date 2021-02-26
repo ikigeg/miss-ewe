@@ -3,6 +3,7 @@ import get from 'lodash/get';
 
 import { useAuthContext } from '../../context/auth';
 import queryGithub from '../../utils/queryGithub';
+import Repository from '../Repository';
 
 const query = `
   query Repos($cursor: String) {
@@ -94,6 +95,7 @@ export default function Repositories({
   }
 
   const handleClick = (clickedId, isSelected) => {
+    console.log({ clickedId, isSelected });
     const newRepos = repos.map((repo) => {
       if (repo.id === clickedId) {
         const newRepo = repo;
@@ -104,7 +106,7 @@ export default function Repositories({
     });
     setRepos(newRepos);
 
-    const newSelected = new Set([...(isSelected || [])]);
+    const newSelected = new Set([...(selected || [])]);
     if (!isSelected) {
       newSelected.add(clickedId);
     } else {
@@ -212,18 +214,7 @@ export default function Repositories({
       </div>
 
       {visibleRepos().map((repo) => (
-        <div
-          key={repo.id}
-          style={{ background: repo.selected ? 'red' : 'transparent' }}
-        >
-          {JSON.stringify(repo)}
-          <button
-            type="button"
-            onClick={() => handleClick(repo.id, repo.selected)}
-          >
-            choose
-          </button>
-        </div>
+        <Repository key={repo.id} {...repo} onClick={handleClick} />
       ))}
     </>
   );
