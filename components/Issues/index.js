@@ -98,35 +98,34 @@ export default function Issues({ chosenRepos, issues, setIssues }) {
       setLoading(false);
     };
 
-    if (chosenRepos && !issues && !loading) {
-      console.log('fetching issues');
-      getIssues();
-      console.log('fetched issues');
-    }
-  }, [access_token, queryGithub, chosenRepos]);
+    getIssues();
+  }, [access_token, queryGithub, chosenRepos, setLoading]);
 
   if (!chosenRepos || chosenRepos.size === 0) {
     return <p>Choose some repositories to see the issues</p>;
   }
 
-  if (!access_token || !issues) {
+  if (loading) {
     return <p>Fetching issues</p>;
   }
 
   return (
     <div>
       <h2>issuues</h2>
-      {issues.map((issue, idx) => (
-        <div
-          key={issue.id}
-          style={{
-            background: idx & 1 ? '#efefef' : 'transparent',
-            marginBottom: '4px',
-          }}
-        >
-          {JSON.stringify(issue)}
-        </div>
-      ))}
+      {loading ? <p>Fetching issues</p> : null}
+      {!loading && issues && issues.length
+        ? issues.map((issue, idx) => (
+            <div
+              key={issue.id}
+              style={{
+                background: idx & 1 ? '#efefef' : 'transparent',
+                marginBottom: '4px',
+              }}
+            >
+              {JSON.stringify(issue)}
+            </div>
+          ))
+        : null}
     </div>
   );
 }
