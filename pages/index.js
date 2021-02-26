@@ -13,7 +13,7 @@ export default function Index({ user, loading, loginId }) {
   if (!user && !loading) {
     return <a href={loginUrl}>Login with GitHub</a>;
   }
-  console.log(user);
+
   return (
     <>
       <div>
