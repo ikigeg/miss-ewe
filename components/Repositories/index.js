@@ -35,17 +35,18 @@ const query = `
 `;
 
 export default function Repositories({
-  loadingRepos,
-  setLoadingRepos,
   repos,
   setRepos,
   chosenRepos,
   setChosenRepos,
 }) {
   const { access_token } = useAuthContext();
+
+  const [loading, setLoading] = useState(false);
   const [showSelected, setShowSelected] = useState(null);
   const [showMatching, setShowMatching] = useState(false);
   const [matching, setMatching] = useState('');
+  const [selected, setSelected] = useState(new Set());
 
   useEffect(() => {
     let allRepos = [];
@@ -53,7 +54,7 @@ export default function Repositories({
     let cursor = undefined;
 
     const fetchRepos = async () => {
-      setLoadingRepos(true);
+      setLoading(true);
 
       while (!done) {
         const data = await queryGithub({
@@ -78,21 +79,21 @@ export default function Repositories({
       }
 
       setRepos(allRepos || []);
-      setLoadingRepos(false);
+      setLoading(false);
     };
 
-    if (!repos && !loadingRepos) {
+    if (!repos && !loading) {
       console.log('fetching repos');
       fetchRepos();
       console.log('fetched repos');
     }
-  }, [access_token, queryGithub, setLoadingRepos]);
+  }, [access_token, queryGithub, setLoading]);
 
   if (!access_token || !repos) {
     return <p>Fetching repos</p>;
   }
 
-  const handleClick = (clickedId, selected) => {
+  const handleClick = (clickedId, isSelected) => {
     const newRepos = repos.map((repo) => {
       if (repo.id === clickedId) {
         const newRepo = repo;
@@ -103,13 +104,13 @@ export default function Repositories({
     });
     setRepos(newRepos);
 
-    const newChosen = new Set([...(chosenRepos || [])]);
-    if (!selected) {
-      newChosen.add(clickedId);
+    const newSelected = new Set([...(isSelected || [])]);
+    if (!isSelected) {
+      newSelected.add(clickedId);
     } else {
-      newChosen.delete(clickedId);
+      newSelected.delete(clickedId);
     }
-    setChosenRepos(newChosen);
+    setSelected(newSelected);
   };
 
   const selectVisible = (select) => {
@@ -128,12 +129,12 @@ export default function Repositories({
     });
     setRepos(newRepos);
 
-    const newChosen = [...(chosenRepos || [])];
+    const newSelected = [...(selected || [])];
     if (select) {
-      newChosen.push(...visible);
-      setChosenRepos(new Set(newChosen));
+      newSelected.push(...visible);
+      setSelected(new Set(newSelected));
     } else {
-      setChosenRepos(new Set(newChosen.filter((c) => !visible.includes(c))));
+      setSelected(new Set(newSelected.filter((c) => !visible.includes(c))));
     }
   };
 
@@ -175,11 +176,8 @@ export default function Repositories({
     setShowMatching(false);
   };
 
-  return (
-    <div>
-      <h2>
-        Repositories - chosen: {chosenRepos.size} of {repos.length}
-      </h2>
+  const repoChooser = (
+    <>
       <div>
         SELECTED:
         <button type="button" onClick={() => setShowSelected(true)}>
@@ -227,6 +225,40 @@ export default function Repositories({
           </button>
         </div>
       ))}
+    </>
+  );
+
+  return (
+    <div>
+      <h2>
+        {chosenRepos && chosenRepos.size ? (
+          <>
+            Repositories - {chosenRepos.size} chosen -{' '}
+            <button
+              type="button"
+              onClick={() => {
+                setChosenRepos(new Set());
+              }}
+            >
+              Change repos
+            </button>
+          </>
+        ) : (
+          <>
+            Repositories - selected: {selected.size} of {repos.length}{' '}
+            <button
+              type="button"
+              onClick={() => {
+                setChosenRepos(new Set([...selected]));
+              }}
+              disabled={!selected || !selected.size}
+            >
+              Fetch Issues
+            </button>
+          </>
+        )}
+      </h2>
+      {chosenRepos ? repoChooser : null}
     </div>
   );
 }

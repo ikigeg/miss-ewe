@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import get from 'lodash/get';
 
+import { useAuthContext } from '../../context/auth';
 import queryGithub from '../../utils/queryGithub';
 
 const query = `
@@ -46,28 +47,25 @@ const query = `
   }  
 `;
 
-export default function Issues({
-  user,
-  access_token,
-  fetchIssues,
-  setFetchIssues,
-  loadingIssues,
-  setLoadingIssues,
-  chosen,
-  issues,
-  setIssues,
-}) {
+export default function Issues({ chosenRepos, issues, setIssues }) {
+  const { access_token } = useAuthContext();
+
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     let allIssues = [];
     let done = false;
     let lastIdx = 0;
 
     const getIssues = async () => {
-      setLoadingIssues(true);
+      setLoading(true);
 
       while (!done) {
         // we take max 20 repo ids at a time
-        const selectedIds = [...(chosen || [])].slice(lastIdx, lastIdx + 20);
+        const selectedIds = [...(chosenRepos || [])].slice(
+          lastIdx,
+          lastIdx + 20
+        );
         if (!selectedIds || selectedIds.length === 0) {
           done = true;
           continue;
@@ -97,22 +95,21 @@ export default function Issues({
 
       lastIdx = 0;
       setIssues(allIssues || []);
-      setLoadingIssues(false);
-      setFetchIssues(false);
+      setLoading(false);
     };
 
-    if (fetchIssues && chosen && !issues && !loadingIssues) {
+    if (chosenRepos && !issues && !loading) {
       console.log('fetching issues');
       getIssues();
       console.log('fetched issues');
     }
-  }, [user, access_token, queryGithub, fetchIssues, chosen]);
+  }, [access_token, queryGithub, chosenRepos]);
 
-  if ((!fetchIssues && !chosen) || chosen.size === 0) {
+  if (!chosenRepos || chosenRepos.size === 0) {
     return <p>Choose some repositories to see the issues</p>;
   }
 
-  if (!user || !access_token || !issues) {
+  if (!access_token || !issues) {
     return <p>Fetching issues</p>;
   }
 

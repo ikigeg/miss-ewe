@@ -3,15 +3,16 @@ import { useState } from 'react';
 import { useAuthContext } from '../../context/auth';
 import Installations from '../Installations';
 import Repositories from '../Repositories';
-// import Issues from '../Issues';
+import Issues from '../Issues';
 
 export default function Main() {
   const { installationId } = useAuthContext();
-  const [loadingRepos, setLoadingRepos] = useState(false);
+
   const [repos, setRepos] = useState();
   const [chosenRepos, setChosenRepos] = useState(new Set());
 
-  // const [fetchIssues, setFetchIssues] = useState(false);
+  const [issues, setIssues] = useState();
+
   // const [loadingIssues, setLoadingIssues] = useState(false);
   // const [issues, setIssues] = useState();
 
@@ -34,15 +35,24 @@ export default function Main() {
   return (
     <div>
       <Installations />
+
       {installationId ? (
         <Repositories
           {...{
-            loadingRepos,
-            setLoadingRepos,
             repos,
             setRepos,
             chosenRepos,
             setChosenRepos,
+          }}
+        />
+      ) : null}
+
+      {chosenRepos ? (
+        <Issues
+          {...{
+            chosenRepos,
+            issues,
+            setIssues,
           }}
         />
       ) : null}
