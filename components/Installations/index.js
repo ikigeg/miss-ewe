@@ -1,8 +1,34 @@
+import { useEffect } from 'react';
 import { useAuthContext } from '../../context/auth';
 import Avatar from '../Avatar';
 
 export default function Main() {
-  const { installations, installationId, setInstallationId } = useAuthContext();
+  const {
+    installations,
+    installationId,
+    setInstallationId,
+    setInstallationToken,
+  } = useAuthContext();
+
+  useEffect(() => {
+    const getInstallationToken = async () => {
+      const response = await fetch('/api/github', {
+        method: 'POST',
+        body: JSON.stringify({ installationId }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      const { token } = await response.json();
+      if (token) {
+        setInstallationToken(token);
+      }
+    };
+
+    if (installationId) {
+      getInstallationToken();
+    }
+  }, [installationId]);
 
   if (
     !installations ||
@@ -13,7 +39,6 @@ export default function Main() {
   }
 
   const handleChoice = (key) => {
-    console.log(key, installations[key]);
     setInstallationId(key);
   };
 

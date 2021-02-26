@@ -20,6 +20,7 @@ export const AuthContextProvider = ({ children }) => {
     loginId: storage.getItem('loginId'),
     installations: null,
     installationId: null,
+    installationToken: null,
   });
 
   const router = useRouter();
@@ -32,6 +33,9 @@ export const AuthContextProvider = ({ children }) => {
 
   const setInstallationId = (installationId) =>
     setAuth({ ...auth, installationId });
+
+  const setInstallationToken = (installationToken) =>
+    setAuth({ ...auth, installationToken });
 
   useEffect(() => {
     const search = window.location.search || '';
@@ -96,6 +100,7 @@ export const AuthContextProvider = ({ children }) => {
       value={{
         ...auth,
         setInstallationId,
+        setInstallationToken,
       }}
     >
       {children}

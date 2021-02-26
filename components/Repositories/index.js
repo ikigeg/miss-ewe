@@ -10,7 +10,7 @@ const query = `
     viewer {
       login
       name
-      repositories(first:100, affiliations: [OWNER, COLLABORATOR, ORGANIZATION_MEMBER], after: $cursor, orderBy: {field: NAME, direction: ASC}) {
+      repositories(first:100, after: $cursor, orderBy: {field: NAME, direction: ASC}) {
         totalCount
         pageInfo {
           hasNextPage
@@ -41,7 +41,7 @@ export default function Repositories({
   chosenRepos,
   setChosenRepos,
 }) {
-  const { access_token } = useAuthContext();
+  const { installationToken } = useAuthContext();
 
   const [loading, setLoading] = useState(false);
   const [showSelected, setShowSelected] = useState(null);
@@ -59,11 +59,11 @@ export default function Repositories({
 
       while (!done) {
         const data = await queryGithub({
-          access_token,
+          access_token: installationToken,
           query,
           variables: { cursor },
         });
-        console.log({ access_token });
+        console.log({ installationToken });
 
         const edges = get(data, 'viewer.repositories.edges', []);
 
@@ -89,9 +89,9 @@ export default function Repositories({
       fetchRepos();
       console.log('fetched repos');
     }
-  }, [access_token, queryGithub, setLoading]);
+  }, [installationToken, queryGithub, setLoading]);
 
-  if (!access_token || !repos) {
+  if (!installationToken || !repos) {
     return <p>Fetching repos</p>;
   }
 

@@ -38,7 +38,7 @@ export default async (event) => {
       const userReponse = await fetch('https://api.github.com/user', {
         headers: {
           Authorization: `token ${access_token}`,
-          'User-Agent': 'CF_WRANGLER-miss-ewe-0.1.0',
+          'User-Agent': 'CF_WRANGLER-miss-ewe-login-0.1.0',
         },
       });
       user = await userReponse.json();
