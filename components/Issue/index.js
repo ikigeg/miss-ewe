@@ -14,13 +14,21 @@ export default function Issue({
   repo,
   idx,
 }) {
+  console.log(labels);
   const prettyLabels =
     labels && labels.totalCount
       ? labels.edges.map(({ node: { color, name, id } }) => (
           <span
             key={id}
             className="label"
-            style={{ borderRadius: '100%', border: `1px solid ${color}` }}
+            style={{
+              borderRadius: '10px',
+              borderWidth: '1px',
+              borderColor: `#${color}`,
+              borderStyle: 'solid',
+              padding: '2px 4px',
+              margin: '0px 2px',
+            }}
           >
             {name}
           </span>

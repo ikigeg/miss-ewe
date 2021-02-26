@@ -9,3 +9,6 @@ webpack_config = "node_modules/flareact/webpack"
 [site]
 bucket = "out"
 entry-point = "./"
+
+[env.production]
+route = "mrstyx.com/miss-ewe/*"
