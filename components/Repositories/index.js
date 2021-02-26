@@ -219,12 +219,13 @@ export default function Repositories({
     </>
   );
 
+  const hasChosen = chosenRepos && chosenRepos.size;
   return (
     <div>
       <h2>
-        {chosenRepos && chosenRepos.size ? (
+        {hasChosen ? (
           <>
-            Repositories - {chosenRepos.size} chosen -{' '}
+            Repositories - {chosenRepos.size} chosen{' '}
             <button
               type="button"
               onClick={() => {
@@ -249,7 +250,7 @@ export default function Repositories({
           </>
         )}
       </h2>
-      {chosenRepos ? repoChooser : null}
+      {!hasChosen ? repoChooser : null}
     </div>
   );
 }
