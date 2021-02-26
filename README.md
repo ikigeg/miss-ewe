@@ -7,7 +7,3 @@ https://github.com/apps/miss-ewe
 ## Created with
 
 Cloudflare workers and https://github.com/flareact/flareact
-
-## Notes
-
-- Add cloudflare secret from a file `cat file.text | wrangler secret put SECRET_THING`
