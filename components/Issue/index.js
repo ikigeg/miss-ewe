@@ -5,7 +5,7 @@ import Avatar from '../Avatar';
 export default function Issue({
   id,
   url,
-  body,
+  bodyHTML,
   author,
   title,
   labels,
@@ -59,7 +59,13 @@ export default function Issue({
           {comments.totalCount || 0}
         </span>
       </div>
-      <div className="issueBody">{body}</div>
+      <div className="issueBody">
+        <div
+          dangerouslySetInnerHTML={{
+            __html: bodyHTML,
+          }}
+        ></div>
+      </div>
     </div>
   );
 }

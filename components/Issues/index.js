@@ -42,6 +42,7 @@ const query = `
               }
               createdAt
               body
+              bodyHTML
             }
             cursor
           }
