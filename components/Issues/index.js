@@ -76,6 +76,7 @@ export default function Issues({ chosenRepos, issues, setIssues }) {
           query,
           variables: { ids: selectedIds },
         });
+        console.log({ selectedIds, data, access_token });
 
         const nodes = get(data, 'nodes', []);
         if (nodes.length === 0) {

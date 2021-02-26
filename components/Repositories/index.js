@@ -63,6 +63,7 @@ export default function Repositories({
           query,
           variables: { cursor },
         });
+        console.log({ access_token });
 
         const edges = get(data, 'viewer.repositories.edges', []);
 
