@@ -11,4 +11,4 @@ bucket = "out"
 entry-point = "./"
 
 [env.production]
-route = "mrstyx.com/miss-ewe/*"
+route = "missewe.mrstyx.com/*"
