@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import get from 'lodash/get';
+import { SpinnerDotted } from 'spinners-react';
 
 import { useAuthContext } from '../../context/auth';
 import queryGithub from '../../utils/queryGithub';
@@ -60,7 +61,6 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
   const { access_token } = useAuthContext();
 
   const [loading, setLoading] = useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [showMatching, setShowMatching] = useState(false);
   const [matching, setMatching] = useState('');
   const [sortBy, setSortBy] = useState('default');
@@ -126,7 +126,13 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
   }
 
   if (loading) {
-    return <p>Fetching issues</p>;
+    return (
+      <div className="issues">
+        <h2>Issues</h2>
+        <p>Fetching issues</p>
+        <SpinnerDotted />
+      </div>
+    );
   }
 
   const reposById = repos.reduce((acc, cv) => {
@@ -194,15 +200,6 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
       return 0;
     });
   };
-
-  if (loading) {
-    return (
-      <div className="issues">
-        <h2>Issues</h2>
-        <p>Fetching issues</p>
-      </div>
-    );
-  }
 
   return (
     <div className="issues">

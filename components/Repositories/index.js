@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import get from 'lodash/get';
+import { SpinnerDotted } from 'spinners-react';
 
 import { useAuthContext } from '../../context/auth';
 import queryGithub from '../../utils/queryGithub';
@@ -94,7 +95,13 @@ export default function Repositories({
   }, [installationToken, queryGithub, setLoading]);
 
   if (!installationToken || !repos) {
-    return <p>Fetching repos</p>;
+    return (
+      <div className="repositories">
+        <h2>Repositories</h2>
+        <p>Fetching repos</p>
+        <SpinnerDotted />
+      </div>
+    );
   }
 
   const handleClick = (clickedId, isSelected) => {
