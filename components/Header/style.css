@@ -7,6 +7,10 @@
   max-height: 10rem;
 }
 
+.header-logo {
+	padding: 0.8rem;
+}
+
 .header-user {
 	position: relative;
 	background: #fff;
