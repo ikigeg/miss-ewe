@@ -1,7 +1,5 @@
 import { Link } from 'react-feather';
 
-import './style.css';
-
 export default function Repository({
   name,
   id,
@@ -17,10 +15,15 @@ export default function Repository({
       className={`${className} ${selected ? 'chosen' : ''}`}
     >
       <span title={id}>{name}</span>
-      <a href={url} target="_blank" rel="noreferrer">
-        <Link />
+      <a
+        className="repository-link"
+        href={url}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <Link style={{ width: '1.8rem', height: '1.8rem' }} />
       </a>
-      {isFork ? <span className="isFork">fork</span> : null}
+      {isFork ? <span className="isFork">(fork)</span> : null}
     </div>
   );
 }

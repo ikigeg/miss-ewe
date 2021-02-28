@@ -46,7 +46,7 @@ export default function Repositories({
   const { installationToken } = useAuthContext();
 
   const [loading, setLoading] = useState(false);
-  const [showSelected, setShowSelected] = useState(null);
+  const [showSelected, setShowSelected] = useState('all');
   const [showMatching, setShowMatching] = useState(false);
   const [matching, setMatching] = useState('');
   const [selected, setSelected] = useState(new Set());
@@ -144,21 +144,20 @@ export default function Repositories({
   };
 
   const visibleRepos = () => {
-    if (showSelected === null && !showMatching) {
+    if (showSelected === 'all' && !showMatching) {
       return repos;
     }
 
     return repos.filter((repo) => {
-      if (showSelected === true && repo.selected) {
+      if (showSelected === 'selected' && repo.selected) {
         return true;
       }
-      if (showSelected === false && !repo.selected) {
+      if (showSelected === 'notSelected' && !repo.selected) {
         return true;
       }
       if (
         showMatching &&
-        repo.name.toLowerCase().substr(0, matching.length) ===
-          matching.toLowerCase()
+        repo.name.toLowerCase().includes(matching.toLowerCase())
       ) {
         return true;
       }
@@ -184,35 +183,41 @@ export default function Repositories({
   const repoChooser = (
     <>
       <div>
-        SELECTED:
-        <button type="button" onClick={() => setShowSelected(true)}>
-          yes
-        </button>
-        <button type="button" onClick={() => setShowSelected(false)}>
-          no
-        </button>
-        <button type="button" onClick={() => setShowSelected(null)}>
-          all
-        </button>
+        Show:
+        <select
+          onChange={(e) => {
+            setShowSelected(e.currentTarget.value);
+          }}
+          value={showSelected}
+        >
+          <option value="all">All</option>
+          <option value="selected">Selected</option>
+          <option value="notSelected">Not selected</option>
+        </select>
       </div>
 
       <div>
         <label>
-          MATCHING:
-          <input type="text" value={matching} onChange={handleMatchingChange} />
+          Search:
+          <input
+            type="text"
+            value={matching}
+            onChange={handleMatchingChange}
+            placeholder="Enter partial name here"
+          />
         </label>
         <button type="button" onClick={resetMatching}>
-          reset
+          Clear
         </button>
       </div>
 
       <div>
-        SET VISIBLE:
+        Bulk action:
         <button type="button" onClick={() => selectVisible(true)}>
-          selected
+          Select all visible
         </button>
         <button type="button" onClick={() => selectVisible(false)}>
-          deselected
+          Deselect all visible
         </button>
       </div>
 
@@ -229,7 +234,7 @@ export default function Repositories({
 
   const hasChosen = chosenRepos && chosenRepos.size;
   return (
-    <div className="repositories">
+    <div className={`repositories ${hasChosen ? 'chosen' : ''}`}>
       <h2>
         {hasChosen ? (
           <>
