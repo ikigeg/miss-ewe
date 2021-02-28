@@ -1,5 +1,7 @@
 import { Link } from 'react-feather';
 
+import './style.css';
+
 export default function Repository({
   name,
   id,
@@ -7,11 +9,12 @@ export default function Repository({
   isFork,
   selected,
   onClick,
+  className,
 }) {
   return (
     <div
       onClick={() => onClick(id, selected)}
-      style={{ background: selected ? 'red' : 'transparent' }}
+      className={`${className} ${selected ? 'chosen' : ''}`}
     >
       <span title={id}>{name}</span>
       <a href={url} target="_blank" rel="noreferrer">

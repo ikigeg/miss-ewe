@@ -108,7 +108,7 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
   }, [access_token, queryGithub, chosenRepos, setLoading]);
 
   if (!chosenRepos || chosenRepos.size === 0) {
-    return <p>Choose some repositories to see the issues</p>;
+    return null;
   }
 
   if (loading) {

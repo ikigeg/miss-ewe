@@ -24,6 +24,7 @@ export default function Main() {
         },
       });
       const { token } = await response.json();
+
       if (token) {
         setInstallationToken(token);
       }
@@ -99,7 +100,7 @@ export default function Main() {
       </div>
     );
   }
-  console.log(installations.installations);
+
   return (
     <div className="installations">
       <h2>Please choose an installation:</h2>

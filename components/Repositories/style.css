@@ -1,11 +1,11 @@
-.installations {
+.repositories {
   padding: 2rem;
   background: #0c0;
   border-radius: 0.8rem;
   margin: 2rem;
 }
 
-.installation {
+.repository {
   border: 1px dashed #0a0;
   padding: 0.4rem 0.8rem;
   border-radius: 0.8rem;
@@ -13,11 +13,11 @@
   margin: 0.2rem 0;
 }
 
-.installation:hover {
+.repository:hover {
   background: #a2f173;
 }
 
-.installations.chosen {
+.repositories.chosen {
   display: flex;
   align-items: center;
   padding: 0.8rem;
@@ -25,20 +25,20 @@
   margin: 2rem 0;
 }
 
-.installations.chosen h2 {
+.repositories.chosen h2 {
   margin-bottom: 0;
 }
 
-.installations.chosen > div {
+.repositories.chosen > div {
   margin: 0 0.4rem;
 }
 
-.installations.chosen .installation {
+.repositories.chosen .repository {
   background: #dadada;
   border: 0;
 }
 
-.installation-link {
+.repository-link {
   margin: 0 0.8rem;
   display: inline-block;
   vertical-align: middle;

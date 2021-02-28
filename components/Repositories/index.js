@@ -5,6 +5,8 @@ import { useAuthContext } from '../../context/auth';
 import queryGithub from '../../utils/queryGithub';
 import Repository from '../Repository';
 
+import './style.css';
+
 const query = `
   query Repos($cursor: String) {
     viewer {
@@ -215,14 +217,19 @@ export default function Repositories({
       </div>
 
       {visibleRepos().map((repo) => (
-        <Repository key={repo.id} {...repo} onClick={handleClick} />
+        <Repository
+          key={repo.id}
+          {...repo}
+          onClick={handleClick}
+          className="repository clickable"
+        />
       ))}
     </>
   );
 
   const hasChosen = chosenRepos && chosenRepos.size;
   return (
-    <div>
+    <div className="repositories">
       <h2>
         {hasChosen ? (
           <>
