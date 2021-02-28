@@ -110,3 +110,19 @@ h2, h3, p {
 .clickable {
   cursor: pointer;
 }
+
+body pre {
+  padding: 16px;
+  overflow: auto;
+  font-size: 85%;
+  line-height: 1.45;
+  background-color: #ccc;
+  border-radius: 6px;
+}
+body pre>code {
+  font-size: 100%;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  font-family: monospace;
+}

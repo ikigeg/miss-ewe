@@ -5,6 +5,8 @@ import { useAuthContext } from '../../context/auth';
 import queryGithub from '../../utils/queryGithub';
 import Issue from '../Issue';
 
+import './style.css';
+
 const query = `
   query OpenIssues($ids: [ID!]!) {
     nodes(ids: $ids) {
@@ -18,6 +20,7 @@ const query = `
           edges {
             node {
               id
+              number
               url
               author {
                 avatarUrl
@@ -123,8 +126,8 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
   }, {});
 
   return (
-    <div>
-      <h2>issuues</h2>
+    <div className="issues">
+      <h2>Issues</h2>
       {loading ? <p>Fetching issues</p> : null}
       {!loading && issues && issues.length
         ? issues.map((issue, idx) => (

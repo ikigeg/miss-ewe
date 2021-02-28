@@ -1,0 +1,13 @@
+.issues {
+  background: #efefef;
+  border-radius: 0.8rem;
+  margin: 0;
+  padding-bottom: 0.8rem;
+  margin-bottom: 2rem;
+}
+
+.issues h2 {
+  padding: 0.8rem;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 0;
+}
