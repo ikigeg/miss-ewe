@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { Link } from 'react-feather';
+
 import { useAuthContext } from '../../context/auth';
 import Avatar from '../Avatar';
 
@@ -74,12 +76,20 @@ export default function Main() {
           <h2>Installation</h2>
         </div>
         <div className="installation">
-          {installation.account.login}
           <Avatar
             src={installation.account.avatar_url}
             url={installation.account.html_url}
             alt={installation.account.login}
           />
+          {installation.account.login}
+          <a
+            className="installation-link"
+            href={installation.html_url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Link style={{ width: '1.8rem', height: '1.8rem' }} />
+          </a>
         </div>
         <div>
           <button type="button" onClick={resetChoice}>
@@ -89,7 +99,7 @@ export default function Main() {
       </div>
     );
   }
-
+  console.log(installations.installations);
   return (
     <div className="installations">
       <h2>Please choose an installation:</h2>
@@ -99,12 +109,20 @@ export default function Main() {
           className="installation clickable"
           onClick={() => handleChoice(i.id)}
         >
-          {i.account.login}
           <Avatar
             src={i.account.avatar_url}
             url={i.account.html_url}
             alt={i.account.login}
           />
+          {i.account.login}
+          <a
+            className="installation-link"
+            href={i.html_url}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <Link style={{ width: '1.8rem', height: '1.8rem' }} />
+          </a>
         </div>
       ))}
     </div>

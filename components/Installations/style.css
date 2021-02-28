@@ -33,6 +33,12 @@
 }
 
 .installations.chosen .installation {
-  background: #0c0;
+  background: #dadada;
   border: 0;
+}
+
+.installation-link {
+  margin: 0 0.8rem;
+  display: inline-block;
+  vertical-align: middle;
 }
