@@ -129,8 +129,10 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
     return (
       <div className="issues">
         <h2>Issues</h2>
-        <p>Fetching issues</p>
-        <SpinnerDotted />
+        <div className="loading">
+          <p>Fetching issues</p>
+          <SpinnerDotted />
+        </div>
       </div>
     );
   }
@@ -180,10 +182,10 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
 
     if (sortBy === 'issueCreated') {
       return filtered.sort((a, b) => {
-        if (a.createdAtInt < b.createdAtInt) {
+        if (a.createdAtInt > b.createdAtInt) {
           return -1;
         }
-        if (a.createdAtInt > b.createdAtInt) {
+        if (a.createdAtInt < b.createdAtInt) {
           return 1;
         }
         return 0;

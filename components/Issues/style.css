@@ -15,3 +15,7 @@
   padding: 0.8rem;
   border-bottom: 1px solid #ccc;
 }
+
+.issues .loading {
+  padding: 0.8rem;
+}
