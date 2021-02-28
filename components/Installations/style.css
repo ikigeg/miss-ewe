@@ -1,0 +1,38 @@
+.installations {
+  padding: 2rem;
+  background: #0c0;
+  border-radius: 0.8rem;
+  margin: 2rem;
+}
+
+.installation {
+  border: 1px dashed #070;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.8rem;
+  background: #0d0;
+}
+
+.installation:hover {
+  background: #a2f173;
+}
+
+.installations.chosen {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem;
+  background: #efefef;
+  margin: 2rem 0;
+}
+
+.installations.chosen h2 {
+  margin-bottom: 0;
+}
+
+.installations.chosen > div {
+  margin: 0 0.4rem;
+}
+
+.installations.chosen .installation {
+  background: #0c0;
+  border: 0;
+}

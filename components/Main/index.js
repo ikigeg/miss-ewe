@@ -12,7 +12,7 @@ export default function Main() {
   const [chosenRepos, setChosenRepos] = useState(new Set());
 
   const [issues, setIssues] = useState();
-
+  console.log('installationToken', installationToken);
   return (
     <div>
       <Installations />
@@ -38,35 +38,6 @@ export default function Main() {
           }}
         />
       ) : null}
-
-      {/* <button type="button" onClick={() => setFetchIssues(true)}>
-        Get Issues
-      </button>
-      <Repositories
-        {...{
-          user,
-          access_token,
-          loadingRepos,
-          setLoadingRepos,
-          repos,
-          setRepos,
-          chosen,
-          setChosen,
-        }}
-      />
-      <Issues
-        {...{
-          user,
-          access_token,
-          fetchIssues,
-          setFetchIssues,
-          loadingIssues,
-          setLoadingIssues,
-          chosen,
-          issues,
-          setIssues,
-        }}
-      /> */}
     </div>
   );
 }

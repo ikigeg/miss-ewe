@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { useAuthContext } from '../../context/auth';
 import Avatar from '../Avatar';
 
+import './style.css';
+
 export default function Main() {
   const {
     installations,
@@ -35,7 +37,22 @@ export default function Main() {
     !installations.total_count ||
     !installations.installations
   ) {
-    return <div>No installations found for your GitHub login</div>;
+    return (
+      <div className="installations">
+        <h2>No installations detected!</h2>
+        <p>
+          Unfortunately it does not look like you have Miss Ewe installed for
+          any of your Github Accounts.
+        </p>
+        <p>
+          Not to worry, simply head to{' '}
+          <a href="https://github.com/apps/miss-ewe">
+            the Miss Ewe GitHub App page
+          </a>{' '}
+          and once installed pop right on back.
+        </p>
+      </div>
+    );
   }
 
   const handleChoice = (key) => {
@@ -52,17 +69,21 @@ export default function Main() {
     )[0];
 
     return (
-      <div>
-        Chosen installation:
+      <div className="installations chosen">
         <div>
+          <h2>Installation</h2>
+        </div>
+        <div className="installation">
           {installation.account.login}
           <Avatar
             src={installation.account.avatar_url}
             url={installation.account.html_url}
             alt={installation.account.login}
           />
+        </div>
+        <div>
           <button type="button" onClick={resetChoice}>
-            Reset choice
+            Pick another
           </button>
         </div>
       </div>
@@ -70,19 +91,20 @@ export default function Main() {
   }
 
   return (
-    <div>
-      Choose an installation:
+    <div className="installations">
+      <h2>Please choose an installation:</h2>
       {installations.installations.map((i) => (
-        <div key={i.id}>
+        <div
+          key={i.id}
+          className="installation clickable"
+          onClick={() => handleChoice(i.id)}
+        >
           {i.account.login}
           <Avatar
             src={i.account.avatar_url}
             url={i.account.html_url}
             alt={i.account.login}
           />
-          <button type="button" onClick={() => handleChoice(i.id)}>
-            Go
-          </button>
         </div>
       ))}
     </div>

@@ -48,7 +48,7 @@ export default function App({ Component, pageProps }) {
                 rel="stylesheet"
               />
             </Head>
-            <Header />
+            <Header {...pageProps} {...props} />
             <Component {...pageProps} {...props} />
           </>
         )}

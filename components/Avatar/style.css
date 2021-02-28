@@ -1,0 +1,11 @@
+.avatar {
+  margin: 0 0.8rem;
+  display: inline-block;
+}
+
+.avatar-img {
+  height: 3rem;
+  width: auto;
+  border-radius: 100%;
+  vertical-align: middle;
+}

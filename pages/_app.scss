@@ -70,7 +70,7 @@ body {
   -ms-text-size-adjust: 100%;
   text-size-adjust: 100%;
   font-size: 1.8rem;
-  background-color: transparent;
+  background-color: #0a0;
   color: $dark1;
 }
 
@@ -101,4 +101,12 @@ h1, h2, h3, h4, h5, h6, strong, b {
 .app {
   text-align: center;
   overflow: auto;
+}
+
+h2, h3, p {
+  margin-bottom: 0.8rem;
+}
+
+.clickable {
+  cursor: pointer;
 }
