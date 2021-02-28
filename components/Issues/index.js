@@ -215,7 +215,7 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
             }}
             value={sortBy}
           >
-            <option value="default">Repo A-Z - Issues newest to oldest</option>
+            <option value="default">Default</option>
             <option value="issueCreated">Issues newest to oldest</option>
             <option value="issueName">Issue name A-Z</option>
           </select>
