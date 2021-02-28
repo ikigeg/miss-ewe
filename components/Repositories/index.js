@@ -98,7 +98,6 @@ export default function Repositories({
   }
 
   const handleClick = (clickedId, isSelected) => {
-    console.log({ clickedId, isSelected });
     const newRepos = repos.map((repo) => {
       if (repo.id === clickedId) {
         const newRepo = repo;

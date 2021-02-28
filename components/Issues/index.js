@@ -12,6 +12,7 @@ const query = `
     nodes(ids: $ids) {
       id
       ... on Repository {
+        name
         issues(first: 20, states: OPEN, orderBy: {field: UPDATED_AT, direction: DESC}) {
           totalCount
           pageInfo {
@@ -59,6 +60,10 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
   const { access_token } = useAuthContext();
 
   const [loading, setLoading] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [showMatching, setShowMatching] = useState(false);
+  const [matching, setMatching] = useState('');
+  const [sortBy, setSortBy] = useState('default');
 
   useEffect(() => {
     let allIssues = [];
@@ -84,7 +89,6 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
           query,
           variables: { ids: selectedIds },
         });
-        console.log({ selectedIds, data, access_token });
 
         const nodes = get(data, 'nodes', []);
         if (nodes.length === 0) {
@@ -96,7 +100,14 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
 
         const issues = nodes.reduce((acc, cv) => {
           const edges = get(cv, 'issues.edges', []);
-          acc.push(...edges.map((e) => ({ ...e.node, repoId: cv.id })));
+          acc.push(
+            ...edges.map((e) => ({
+              ...e.node,
+              repoId: cv.id,
+              repoName: cv.name,
+              createdAtInt: new Date(e.node.createdAt).getTime(),
+            }))
+          );
           return acc;
         }, []);
         allIssues.push(...issues);
@@ -125,12 +136,109 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
     return acc;
   }, {});
 
+  const handleMatchingChange = (e) => {
+    setMatching(e.target.value);
+
+    if (matching === '' && !setShowMatching) {
+      setShowMatching(false);
+    } else if (matching !== '') {
+      setShowMatching(true);
+    }
+  };
+
+  const resetMatching = () => {
+    setMatching('');
+    setShowMatching(false);
+  };
+
+  const visibleIssues = () => {
+    if (sortBy === 'default' && !showMatching) {
+      return issues;
+    }
+
+    const filtered = showMatching
+      ? issues.filter((issue) => {
+          if (
+            showMatching &&
+            issue.title.toLowerCase().includes(matching.toLowerCase())
+          ) {
+            return true;
+          }
+          return false;
+        })
+      : issues;
+
+    if (sortBy === 'default') {
+      return filtered;
+    }
+
+    if (sortBy === 'issueCreated') {
+      return filtered.sort((a, b) => {
+        if (a.createdAtInt < b.createdAtInt) {
+          return -1;
+        }
+        if (a.createdAtInt > b.createdAtInt) {
+          return 1;
+        }
+        return 0;
+      });
+    }
+
+    return filtered.sort((a, b) => {
+      if (a.title.toLowerCase() < b.title.toLowerCase()) {
+        return -1;
+      }
+      if (a.title.toLowerCase() > b.title.toLowerCase()) {
+        return 1;
+      }
+      return 0;
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="issues">
+        <h2>Issues</h2>
+        <p>Fetching issues</p>
+      </div>
+    );
+  }
+
   return (
     <div className="issues">
       <h2>Issues</h2>
-      {loading ? <p>Fetching issues</p> : null}
-      {!loading && issues && issues.length
-        ? issues.map((issue, idx) => (
+      <div className="issue-controls">
+        <div>
+          Sort:
+          <select
+            onChange={(e) => {
+              setSortBy(e.currentTarget.value);
+            }}
+            value={sortBy}
+          >
+            <option value="default">Repo A-Z - Issues newest to oldest</option>
+            <option value="issueCreated">Issues newest to oldest</option>
+            <option value="issueName">Issue name A-Z</option>
+          </select>
+        </div>
+
+        <div>
+          <label>
+            Search:
+            <input
+              type="text"
+              value={matching}
+              onChange={handleMatchingChange}
+              placeholder="Enter partial name here"
+            />
+          </label>
+          <button type="button" onClick={resetMatching}>
+            Clear
+          </button>
+        </div>
+      </div>
+      {issues && issues.length
+        ? visibleIssues().map((issue, idx) => (
             <Issue
               key={issue.id}
               idx={idx}

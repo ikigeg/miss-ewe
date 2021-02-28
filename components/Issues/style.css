@@ -11,3 +11,8 @@
   border-bottom: 1px solid #ccc;
   margin-bottom: 0;
 }
+
+.issue-controls {
+  padding: 0.8rem;
+  border-bottom: 1px solid #ccc;
+}
