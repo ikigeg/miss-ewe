@@ -64,7 +64,6 @@ export default function Main() {
 
   const resetChoice = () => {
     setInstallationId();
-    setInstallationToken();
   };
 
   if (installationId) {

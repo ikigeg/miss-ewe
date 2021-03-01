@@ -66,7 +66,6 @@ export default function Repositories({
           query,
           variables: { cursor },
         });
-        console.log({ installationToken });
 
         const edges = get(data, 'viewer.repositories.edges', []);
 
@@ -88,9 +87,7 @@ export default function Repositories({
     };
 
     if (!repos && !loading) {
-      console.log('fetching repos');
       fetchRepos();
-      console.log('fetched repos');
     }
   }, [installationToken, queryGithub, setLoading]);
 

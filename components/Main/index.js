@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useAuthContext } from '../../context/auth';
 import Installations from '../Installations';
@@ -12,13 +12,6 @@ export default function Main() {
   const [chosenRepos, setChosenRepos] = useState(new Set());
 
   const [issues, setIssues] = useState();
-
-  useEffect(() => {
-    if (!installationToken && chosenRepos && chosenRepos.size) {
-      setChosenRepos(new Set());
-      setIssues();
-    }
-  }, [installationToken, setChosenRepos, setIssues]);
 
   return (
     <div>
