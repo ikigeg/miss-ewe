@@ -59,8 +59,10 @@
 
 .issueBody {
   margin: 0.8rem;
-  border: 0.1rem solid #aaa;
+  border: 0.1rem solid #cacaca;
   padding: 0.8rem;
-  background: #b9b9b9;
+  background: #e2e2e2;
   border-radius: 0.4rem;
+  font-size: 1.6rem;
+  line-height: 2.2rem;
 }
