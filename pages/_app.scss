@@ -58,6 +58,7 @@ html {
   line-height: 1.2;
   box-sizing: border-box;
   font-weight: $font-regular-weight-normal;
+  background-color: #0a0;
 }
 
 body {
@@ -70,8 +71,8 @@ body {
   -ms-text-size-adjust: 100%;
   text-size-adjust: 100%;
   font-size: 1.8rem;
-  background-color: #0a0;
   color: $dark1;
+  max-width: 120rem;
 }
 
 *,
