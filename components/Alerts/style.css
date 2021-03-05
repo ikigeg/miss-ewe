@@ -1,0 +1,21 @@
+.issues {
+  background: #efefef;
+  border-radius: 0.8rem;
+  margin: 0 0.8rem 2rem;
+  padding-bottom: 0.8rem;
+}
+
+.issues h2 {
+  padding: 0.8rem;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 0;
+}
+
+.issue-controls {
+  padding: 0.8rem;
+  border-bottom: 1px solid #ccc;
+}
+
+.issues .loading {
+  padding: 0.8rem;
+}
