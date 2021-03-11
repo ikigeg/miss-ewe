@@ -1,21 +1,21 @@
-.alerts {
+.dependabot-alerts {
   background: #efefef;
   border-radius: 0.8rem;
   margin: 0 0.8rem 2rem;
   padding-bottom: 0.8rem;
 }
 
-.alerts h2 {
+.dependabot-alerts h2 {
   padding: 0.8rem;
   border-bottom: 1px solid #ccc;
   margin-bottom: 0;
 }
 
-.alerts-controls {
+.dependabot-alerts-controls {
   padding: 0.8rem;
   border-bottom: 1px solid #ccc;
 }
 
-.alerts .loading {
+.dependabot-alerts .loading {
   padding: 0.8rem;
 }

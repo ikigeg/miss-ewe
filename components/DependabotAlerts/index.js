@@ -6,7 +6,7 @@ import queryGithub from '../../utils/queryGithub';
 import Loader from '../Loader';
 
 const query = `
-  query OpenAlerts($ids: [ID!]!) {
+  query OpenDependabotAlerts($ids: [ID!]!) {
     nodes(ids: $ids) {
       id
       ... on Repository {
@@ -56,6 +56,7 @@ const query = `
 `;
 
 /*
+{ "ids": ["MDEwOlJlcG9zaXRvcnkxNDc0MTg2NTk="]}
 example output:
 {
   "data": {
@@ -121,11 +122,12 @@ example output:
 }
 */
 
-export default function Alerts({
+export default function DependabotAlerts({
   chosenRepos,
-  alerts,
-  setAlerts,
-  resetAlerts,
+  // repos,
+  dependabotAlerts,
+  setDependabotAlerts,
+  resetDependabotAlerts,
 }) {
   const { access_token } = useAuthContext();
 
@@ -137,11 +139,11 @@ export default function Alerts({
   const [fetched, setFetched] = useState(0);
 
   useEffect(() => {
-    let allAlerts = [];
+    let allDependabotAlerts = [];
     let done = false;
     let lastIdx = 0;
 
-    const getAlerts = async () => {
+    const getDependabotAlerts = async () => {
       setLoading(true);
 
       while (!done) {
@@ -177,7 +179,7 @@ export default function Alerts({
 
         lastIdx = lastIdx + 20;
 
-        const alerts = nodes.reduce((acc, cv) => {
+        const batch = nodes.reduce((acc, cv) => {
           const edges = get(cv, 'vulnerabilityAlerts.edges', []);
           acc.push(
             ...edges.map((e) => ({
@@ -189,21 +191,21 @@ export default function Alerts({
           );
           return acc;
         }, []);
-        allAlerts.push(...alerts);
+        allDependabotAlerts.push(...batch);
         setFetched(lastIdx);
       }
 
       lastIdx = 0;
-      setAlerts(allAlerts || []);
+      setDependabotAlerts(allDependabotAlerts || []);
       setLoading(false);
     };
 
     if (
       chosenRepos &&
       chosenRepos.size > 0 &&
-      (!alerts || alerts.length === 0)
+      (!dependabotAlerts || dependabotAlerts.length === 0)
     ) {
-      getAlerts();
+      getDependabotAlerts();
     }
   }, [
     access_token,
@@ -212,7 +214,7 @@ export default function Alerts({
     setLoading,
     setTotal,
     setFetched,
-    alerts,
+    dependabotAlerts,
   ]);
 
   if (!chosenRepos || chosenRepos.size === 0) {
@@ -221,10 +223,10 @@ export default function Alerts({
 
   if (loading) {
     return (
-      <div className="alerts">
-        <h2>Vulnerabily Alerts</h2>
+      <div className="dependabot-alerts">
+        <h2>Dependabot Alerts</h2>
         <div className="loading">
-          <p>Fetching vulnerabily alerts</p>
+          <p>Fetching dependabot alerts</p>
           <Loader total={total} fetched={fetched} />
         </div>
       </div>
@@ -253,13 +255,13 @@ export default function Alerts({
     setShowMatching(false);
   };
 
-  const visibleAlerts = () => {
+  const visibleDependabotAlerts = () => {
     if (sortBy === 'default' && !showMatching) {
-      return alerts;
+      return dependabotAlerts;
     }
 
     const filtered = showMatching
-      ? alerts.filter((alert) => {
+      ? dependabotAlerts.filter((alert) => {
           if (
             showMatching &&
             alert.title.toLowerCase().includes(matching.toLowerCase())
@@ -268,7 +270,7 @@ export default function Alerts({
           }
           return false;
         })
-      : alerts;
+      : dependabotAlerts;
 
     if (sortBy === 'default') {
       return filtered;
@@ -298,19 +300,19 @@ export default function Alerts({
   };
 
   return (
-    <div className="alerts">
+    <div className="dependabot-alerts">
       <h2>
-        Vulnerabily Alerts{' '}
+        Dependabot Alerts{' '}
         <button
           type="button"
           onClick={() => {
-            resetAlerts();
+            resetDependabotAlerts();
           }}
         >
           Refresh
         </button>
       </h2>
-      <div className="alerts-controls">
+      <div className="dependabot-alerts-controls">
         <div>
           Sort:
           <select
@@ -320,8 +322,8 @@ export default function Alerts({
             value={sortBy}
           >
             <option value="default">Default</option>
-            <option value="createdAt">Alerts newest to oldest</option>
-            <option value="name">Alerts name A-Z</option>
+            <option value="createdAt">Newest to oldest</option>
+            <option value="name">Name A-Z</option>
           </select>
         </div>
 
@@ -340,8 +342,8 @@ export default function Alerts({
           </button>
         </div>
       </div>
-      {alerts && alerts.length
-        ? visibleAlerts().map((alert, idx) => (
+      {dependabotAlerts && dependabotAlerts.length
+        ? visibleDependabotAlerts().map((alert, idx) => (
             <div key={idx}>{JSON.stringify(alert)}</div>
           ))
         : null}

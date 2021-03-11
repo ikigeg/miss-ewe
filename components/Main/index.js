@@ -4,10 +4,10 @@ import { useAuthContext } from '../../context/auth';
 import Installations from '../Installations';
 import Repositories from '../Repositories';
 import Issues from '../Issues';
-import Alerts from '../Alerts';
+import DependabotAlerts from '../DependabotAlerts';
 
 const VIEW_ISSUES = 'issues';
-const VIEW_ALERTS = 'alerts';
+const VIEW_DEPENDABOT_ALERTS = 'dependabotAlerts';
 
 export default function Main() {
   const { installationToken } = useAuthContext();
@@ -16,11 +16,11 @@ export default function Main() {
   const [chosenRepos, setChosenRepos] = useState(new Set());
 
   const [issues, setIssues] = useState();
-  const [alerts, setAlerts] = useState();
+  const [dependabotAlerts, setDependabotAlerts] = useState();
 
   const [viewing, setViewing] = useState(VIEW_ISSUES);
   const viewIssues = () => setViewing(VIEW_ISSUES);
-  const viewAlerts = () => setViewing(VIEW_ALERTS);
+  const viewDependabotAlerts = () => setViewing(VIEW_DEPENDABOT_ALERTS);
 
   const resetIssues = () => {
     setIssues([]);
@@ -29,10 +29,10 @@ export default function Main() {
     }
   };
 
-  const resetAlerts = () => {
-    setAlerts([]);
-    if (viewing !== VIEW_ALERTS) {
-      setViewing(VIEW_ALERTS);
+  const resetDependabotAlerts = () => {
+    setDependabotAlerts([]);
+    if (viewing !== VIEW_DEPENDABOT_ALERTS) {
+      setViewing(VIEW_DEPENDABOT_ALERTS);
     }
   };
 
@@ -48,7 +48,7 @@ export default function Main() {
             chosenRepos,
             setChosenRepos,
             viewIssues,
-            viewAlerts,
+            viewDependabotAlerts,
           }}
         />
       ) : null}
@@ -65,14 +65,14 @@ export default function Main() {
         />
       ) : null}
 
-      {chosenRepos && viewing === VIEW_ALERTS ? (
-        <Alerts
+      {chosenRepos && viewing === VIEW_DEPENDABOT_ALERTS ? (
+        <DependabotAlerts
           {...{
             repos,
             chosenRepos,
-            alerts,
-            setAlerts,
-            resetAlerts,
+            dependabotAlerts,
+            setDependabotAlerts,
+            resetDependabotAlerts,
           }}
         />
       ) : null}

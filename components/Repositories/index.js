@@ -44,7 +44,7 @@ export default function Repositories({
   chosenRepos,
   setChosenRepos,
   viewIssues,
-  viewAlerts,
+  viewDependabotAlerts,
 }) {
   const { installationToken } = useAuthContext();
 
@@ -263,8 +263,8 @@ export default function Repositories({
             <button type="button" onClick={viewIssues}>
               View Issues
             </button>
-            <button type="button" onClick={viewAlerts}>
-              View Alerts
+            <button type="button" onClick={viewDependabotAlerts}>
+              View Dependabot Alerts
             </button>
           </>
         ) : (
@@ -283,12 +283,12 @@ export default function Repositories({
             <button
               type="button"
               onClick={() => {
-                viewAlerts();
+                viewDependabotAlerts();
                 setChosenRepos(new Set([...selected]));
               }}
               disabled={!selected || !selected.size}
             >
-              Fetch Alerts
+              Fetch Dependabot Alerts
             </button>
           </>
         )}
