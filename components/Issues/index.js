@@ -57,7 +57,13 @@ const query = `
   }
 `;
 
-export default function Issues({ chosenRepos, issues, setIssues, repos }) {
+export default function Issues({
+  chosenRepos,
+  issues,
+  setIssues,
+  repos,
+  resetIssues,
+}) {
   const { access_token } = useAuthContext();
 
   const [loading, setLoading] = useState(false);
@@ -144,6 +150,7 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
     setLoading,
     setTotal,
     setFetched,
+    issues,
   ]);
 
   if (!chosenRepos || chosenRepos.size === 0) {
@@ -230,7 +237,17 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
 
   return (
     <div className="issues">
-      <h2>Issues</h2>
+      <h2>
+        Issues{' '}
+        <button
+          type="button"
+          onClick={() => {
+            resetIssues();
+          }}
+        >
+          Refresh
+        </button>
+      </h2>
       <div className="issue-controls">
         <div>
           Sort:

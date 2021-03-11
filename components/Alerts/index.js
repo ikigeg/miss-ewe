@@ -121,7 +121,12 @@ example output:
 }
 */
 
-export default function Alerts({ chosenRepos, alerts, setAlerts }) {
+export default function Alerts({
+  chosenRepos,
+  alerts,
+  setAlerts,
+  resetAlerts,
+}) {
   const { access_token } = useAuthContext();
 
   const [loading, setLoading] = useState(false);
@@ -193,7 +198,13 @@ export default function Alerts({ chosenRepos, alerts, setAlerts }) {
       setLoading(false);
     };
 
-    getAlerts();
+    if (
+      chosenRepos &&
+      chosenRepos.size > 0 &&
+      (!alerts || alerts.length === 0)
+    ) {
+      getAlerts();
+    }
   }, [
     access_token,
     queryGithub,
@@ -201,6 +212,7 @@ export default function Alerts({ chosenRepos, alerts, setAlerts }) {
     setLoading,
     setTotal,
     setFetched,
+    alerts,
   ]);
 
   if (!chosenRepos || chosenRepos.size === 0) {
@@ -287,7 +299,17 @@ export default function Alerts({ chosenRepos, alerts, setAlerts }) {
 
   return (
     <div className="alerts">
-      <h2>Vulnerabily Alerts</h2>
+      <h2>
+        Vulnerabily Alerts{' '}
+        <button
+          type="button"
+          onClick={() => {
+            resetAlerts();
+          }}
+        >
+          Refresh
+        </button>
+      </h2>
       <div className="alerts-controls">
         <div>
           Sort:
