@@ -130,7 +130,13 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
       setLoading(false);
     };
 
-    getIssues();
+    if (
+      chosenRepos &&
+      chosenRepos.size > 0 &&
+      (!issues || issues.length === 0)
+    ) {
+      getIssues();
+    }
   }, [
     access_token,
     queryGithub,
