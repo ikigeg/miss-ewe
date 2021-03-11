@@ -1,12 +1,9 @@
 import { useEffect, useState } from 'react';
 import get from 'lodash/get';
-import { SpinnerDotted } from 'spinners-react';
 
 import { useAuthContext } from '../../context/auth';
 import queryGithub from '../../utils/queryGithub';
-import Issue from '../Issue';
-
-import './style.css';
+import Loader from '../Loader';
 
 const query = `
   query OpenAlerts($ids: [ID!]!) {
@@ -124,23 +121,31 @@ example output:
 }
 */
 
-export default function Alerts({ chosenRepos, issues, setIssues, repos }) {
+export default function Alerts({ chosenRepos, alerts, setAlerts }) {
   const { access_token } = useAuthContext();
 
   const [loading, setLoading] = useState(false);
   const [showMatching, setShowMatching] = useState(false);
   const [matching, setMatching] = useState('');
   const [sortBy, setSortBy] = useState('default');
+  const [total, setTotal] = useState(0);
+  const [fetched, setFetched] = useState(0);
 
   useEffect(() => {
-    let allIssues = [];
+    let allAlerts = [];
     let done = false;
     let lastIdx = 0;
 
-    const getIssues = async () => {
+    const getAlerts = async () => {
       setLoading(true);
 
       while (!done) {
+        const chosenLength = [...(chosenRepos || [])].length;
+
+        if (lastIdx === 0) {
+          setTotal(chosenLength);
+        }
+
         // we take max 20 repo ids at a time
         const selectedIds = [...(chosenRepos || [])].slice(
           lastIdx,
@@ -148,6 +153,7 @@ export default function Alerts({ chosenRepos, issues, setIssues, repos }) {
         );
         if (!selectedIds || selectedIds.length === 0) {
           done = true;
+          setFetched(chosenLength);
           continue;
         }
 
@@ -160,13 +166,14 @@ export default function Alerts({ chosenRepos, issues, setIssues, repos }) {
         const nodes = get(data, 'nodes', []);
         if (nodes.length === 0) {
           done = true;
+          setFetched(chosenLength);
           continue;
         }
 
         lastIdx = lastIdx + 20;
 
-        const issues = nodes.reduce((acc, cv) => {
-          const edges = get(cv, 'issues.edges', []);
+        const alerts = nodes.reduce((acc, cv) => {
+          const edges = get(cv, 'vulnerabilityAlerts.edges', []);
           acc.push(
             ...edges.map((e) => ({
               ...e.node,
@@ -177,16 +184,24 @@ export default function Alerts({ chosenRepos, issues, setIssues, repos }) {
           );
           return acc;
         }, []);
-        allIssues.push(...issues);
+        allAlerts.push(...alerts);
+        setFetched(lastIdx);
       }
 
       lastIdx = 0;
-      setIssues(allIssues || []);
+      setAlerts(allAlerts || []);
       setLoading(false);
     };
 
-    getIssues();
-  }, [access_token, queryGithub, chosenRepos, setLoading]);
+    getAlerts();
+  }, [
+    access_token,
+    queryGithub,
+    chosenRepos,
+    setLoading,
+    setTotal,
+    setFetched,
+  ]);
 
   if (!chosenRepos || chosenRepos.size === 0) {
     return null;
@@ -194,22 +209,22 @@ export default function Alerts({ chosenRepos, issues, setIssues, repos }) {
 
   if (loading) {
     return (
-      <div className="issues">
-        <h2>Issues</h2>
+      <div className="alerts">
+        <h2>Vulnerabily Alerts</h2>
         <div className="loading">
-          <p>Fetching issues</p>
-          <SpinnerDotted />
+          <p>Fetching vulnerabily alerts</p>
+          <Loader total={total} fetched={fetched} />
         </div>
       </div>
     );
   }
 
-  const reposById = repos.reduce((acc, cv) => {
-    if (chosenRepos.has(cv.id)) {
-      acc[cv.id] = cv;
-    }
-    return acc;
-  }, {});
+  // const reposById = repos.reduce((acc, cv) => {
+  //   if (chosenRepos.has(cv.id)) {
+  //     acc[cv.id] = cv;
+  //   }
+  //   return acc;
+  // }, {});
 
   const handleMatchingChange = (e) => {
     setMatching(e.target.value);
@@ -226,28 +241,28 @@ export default function Alerts({ chosenRepos, issues, setIssues, repos }) {
     setShowMatching(false);
   };
 
-  const visibleIssues = () => {
+  const visibleAlerts = () => {
     if (sortBy === 'default' && !showMatching) {
-      return issues;
+      return alerts;
     }
 
     const filtered = showMatching
-      ? issues.filter((issue) => {
+      ? alerts.filter((alert) => {
           if (
             showMatching &&
-            issue.title.toLowerCase().includes(matching.toLowerCase())
+            alert.title.toLowerCase().includes(matching.toLowerCase())
           ) {
             return true;
           }
           return false;
         })
-      : issues;
+      : alerts;
 
     if (sortBy === 'default') {
       return filtered;
     }
 
-    if (sortBy === 'issueCreated') {
+    if (sortBy === 'createdAt') {
       return filtered.sort((a, b) => {
         if (a.createdAtInt > b.createdAtInt) {
           return -1;
@@ -271,9 +286,9 @@ export default function Alerts({ chosenRepos, issues, setIssues, repos }) {
   };
 
   return (
-    <div className="issues">
-      <h2>Issues</h2>
-      <div className="issue-controls">
+    <div className="alerts">
+      <h2>Vulnerabily Alerts</h2>
+      <div className="alerts-controls">
         <div>
           Sort:
           <select
@@ -283,8 +298,8 @@ export default function Alerts({ chosenRepos, issues, setIssues, repos }) {
             value={sortBy}
           >
             <option value="default">Default</option>
-            <option value="issueCreated">Issues newest to oldest</option>
-            <option value="issueName">Issue name A-Z</option>
+            <option value="createdAt">Alerts newest to oldest</option>
+            <option value="name">Alerts name A-Z</option>
           </select>
         </div>
 
@@ -303,14 +318,9 @@ export default function Alerts({ chosenRepos, issues, setIssues, repos }) {
           </button>
         </div>
       </div>
-      {issues && issues.length
-        ? visibleIssues().map((issue, idx) => (
-            <Issue
-              key={issue.id}
-              idx={idx}
-              {...issue}
-              repo={reposById[issue.repoId]}
-            />
+      {alerts && alerts.length
+        ? visibleAlerts().map((alert, idx) => (
+            <div key={idx}>{JSON.stringify(alert)}</div>
           ))
         : null}
     </div>

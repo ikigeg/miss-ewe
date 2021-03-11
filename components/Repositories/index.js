@@ -43,6 +43,8 @@ export default function Repositories({
   setRepos,
   chosenRepos,
   setChosenRepos,
+  viewIssues,
+  viewAlerts,
 }) {
   const { installationToken } = useAuthContext();
 
@@ -258,6 +260,12 @@ export default function Repositories({
             >
               Change repos
             </button>
+            <button type="button" onClick={viewIssues}>
+              View Issues
+            </button>
+            <button type="button" onClick={viewAlerts}>
+              View Alerts
+            </button>
           </>
         ) : (
           <>
@@ -265,11 +273,22 @@ export default function Repositories({
             <button
               type="button"
               onClick={() => {
+                viewIssues();
                 setChosenRepos(new Set([...selected]));
               }}
               disabled={!selected || !selected.size}
             >
               Fetch Issues
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                viewAlerts();
+                setChosenRepos(new Set([...selected]));
+              }}
+              disabled={!selected || !selected.size}
+            >
+              Fetch Alerts
             </button>
           </>
         )}
