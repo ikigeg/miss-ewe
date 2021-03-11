@@ -76,8 +76,10 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
       setLoading(true);
 
       while (!done) {
+        const chosenLength = [...(chosenRepos || [])].length;
+
         if (lastIdx === 0) {
-          setTotal([...(chosenRepos || [])].length);
+          setTotal(chosenLength);
         }
 
         // we take max 20 repo ids at a time
@@ -87,6 +89,7 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
         );
         if (!selectedIds || selectedIds.length === 0) {
           done = true;
+          setFetched(chosenLength);
           continue;
         }
 
@@ -99,6 +102,7 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
         const nodes = get(data, 'nodes', []);
         if (nodes.length === 0) {
           done = true;
+          setFetched(chosenLength);
           continue;
         }
 
@@ -243,7 +247,7 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
               type="text"
               value={matching}
               onChange={handleMatchingChange}
-              placeholder="Enter partial name here"
+              placeholder="Enter partial title here"
             />
           </label>
           <button type="button" onClick={resetMatching}>
