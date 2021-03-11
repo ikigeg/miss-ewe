@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import get from 'lodash/get';
-import { SpinnerDotted } from 'spinners-react';
 
 import { useAuthContext } from '../../context/auth';
 import queryGithub from '../../utils/queryGithub';
 import Issue from '../Issue';
+import Loader from '../Loader';
 
 import './style.css';
 
@@ -64,6 +64,8 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
   const [showMatching, setShowMatching] = useState(false);
   const [matching, setMatching] = useState('');
   const [sortBy, setSortBy] = useState('default');
+  const [total, setTotal] = useState(0);
+  const [fetched, setFetched] = useState(0);
 
   useEffect(() => {
     let allIssues = [];
@@ -74,6 +76,10 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
       setLoading(true);
 
       while (!done) {
+        if (lastIdx === 0) {
+          setTotal([...(chosenRepos || [])].length);
+        }
+
         // we take max 20 repo ids at a time
         const selectedIds = [...(chosenRepos || [])].slice(
           lastIdx,
@@ -111,6 +117,8 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
           return acc;
         }, []);
         allIssues.push(...issues);
+
+        setFetched(lastIdx);
       }
 
       lastIdx = 0;
@@ -119,7 +127,14 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
     };
 
     getIssues();
-  }, [access_token, queryGithub, chosenRepos, setLoading]);
+  }, [
+    access_token,
+    queryGithub,
+    chosenRepos,
+    setLoading,
+    setTotal,
+    setFetched,
+  ]);
 
   if (!chosenRepos || chosenRepos.size === 0) {
     return null;
@@ -131,7 +146,7 @@ export default function Issues({ chosenRepos, issues, setIssues, repos }) {
         <h2>Issues</h2>
         <div className="loading">
           <p>Fetching issues</p>
-          <SpinnerDotted />
+          <Loader total={total} fetched={fetched} />
         </div>
       </div>
     );

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import get from 'lodash/get';
-import { SpinnerDotted } from 'spinners-react';
 
 import { useAuthContext } from '../../context/auth';
 import queryGithub from '../../utils/queryGithub';
 import Repository from '../Repository';
+import Loader from '../Loader';
 
 import './style.css';
 
@@ -51,6 +51,8 @@ export default function Repositories({
   const [showMatching, setShowMatching] = useState(false);
   const [matching, setMatching] = useState('');
   const [selected, setSelected] = useState(new Set());
+  const [total, setTotal] = useState(0);
+  const [fetched, setFetched] = useState(0);
 
   useEffect(() => {
     let allRepos = [];
@@ -74,8 +76,14 @@ export default function Repositories({
           continue;
         }
 
+        if (!cursor) {
+          const totalCount = get(data, 'viewer.repositories.totalCount', 0);
+          setTotal(totalCount);
+        }
+
         cursor = edges[edges.length - 1].cursor;
         allRepos.push(...edges.map((e) => e.node));
+        setFetched(allRepos.length);
 
         if (!get(data, 'viewer.repositories.pageInfo.hasNextPage', false)) {
           done = true;
@@ -89,14 +97,14 @@ export default function Repositories({
     if (!repos && !loading) {
       fetchRepos();
     }
-  }, [installationToken, queryGithub, setLoading]);
+  }, [installationToken, queryGithub, setLoading, setTotal, setFetched]);
 
   if (!installationToken || !repos) {
     return (
       <div className="repositories">
         <h2>Repositories</h2>
         <p>Fetching repos</p>
-        <SpinnerDotted />
+        <Loader total={total} fetched={fetched} />
       </div>
     );
   }
