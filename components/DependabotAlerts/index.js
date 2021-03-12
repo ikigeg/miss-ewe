@@ -8,6 +8,12 @@ import DependabotAlert from '../DependabotAlert';
 
 import './style.css';
 
+const severities = {
+  LOW: 10,
+  MODERATE: 20,
+  HIGH: 30,
+};
+
 const query = `
   query OpenDependabotAlerts($ids: [ID!]!) {
     nodes(ids: $ids) {
@@ -75,7 +81,7 @@ export default function DependabotAlerts({
   const [showMatching, setShowMatching] = useState(false);
   const [showSelected, setShowSelected] = useState('open');
   const [matching, setMatching] = useState('');
-  const [sortBy, setSortBy] = useState('default');
+  const [sortBy, setSortBy] = useState('severityCreatedAt');
   const [total, setTotal] = useState(0);
   const [fetched, setFetched] = useState(0);
 
@@ -228,15 +234,16 @@ export default function DependabotAlerts({
     }
 
     if (sortBy === 'createdAt') {
-      return filtered.sort((a, b) => {
-        if (a.createdAtInt > b.createdAtInt) {
-          return -1;
-        }
-        if (a.createdAtInt < b.createdAtInt) {
-          return 1;
-        }
-        return 0;
-      });
+      return filtered.sort((a, b) => b.createdAtInt - a.createdAtInt);
+    }
+
+    if (sortBy === 'severityCreatedAt') {
+      return filtered.sort(
+        (a, b) =>
+          severities[b.securityVulnerability.severity] -
+            severities[a.securityVulnerability.severity] ||
+          b.createdAtInt - a.createdAtInt
+      );
     }
 
     return filtered.sort((a, b) => {
@@ -292,6 +299,7 @@ export default function DependabotAlerts({
             value={sortBy}
           >
             <option value="default">Default</option>
+            <option value="severityCreatedAt">Severity and Newest</option>
             <option value="createdAt">Newest to oldest</option>
             <option value="name">Name A-Z</option>
           </select>
