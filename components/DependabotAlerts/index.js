@@ -12,6 +12,7 @@ const severities = {
   LOW: 10,
   MODERATE: 20,
   HIGH: 30,
+  CRITICAL: 40,
 };
 
 const query = `
