@@ -42,7 +42,9 @@ export default function Repositories({
   repos,
   setRepos,
   chosenRepos,
-  setChosenRepos,
+  chooseRepos,
+  hasChosen,
+  resetRepos,
   viewIssues,
   viewDependabotAlerts,
 }) {
@@ -55,6 +57,7 @@ export default function Repositories({
   const [selected, setSelected] = useState(new Set());
   const [total, setTotal] = useState(0);
   const [fetched, setFetched] = useState(0);
+  const [className, setClassName] = useState('repositories');
 
   useEffect(() => {
     let allRepos = [];
@@ -99,7 +102,15 @@ export default function Repositories({
     if (!repos && !loading) {
       fetchRepos();
     }
-  }, [installationToken, queryGithub, setLoading, setTotal, setFetched]);
+  }, [installationToken, queryGithub, setLoading, setTotal, setFetched, repos]);
+
+  useEffect(() => {
+    if (hasChosen) {
+      setClassName('repositories chosen');
+    } else {
+      setClassName('repositories');
+    }
+  }, [hasChosen]);
 
   if (!installationToken || !repos) {
     return (
@@ -245,55 +256,56 @@ export default function Repositories({
     </>
   );
 
-  const hasChosen = chosenRepos && chosenRepos.size;
+  if (hasChosen) {
+    return (
+      <div className={className}>
+        <h2>
+          Repositories - {chosenRepos.size} chosen{' '}
+          <button
+            type="button"
+            onClick={() => {
+              resetRepos();
+            }}
+          >
+            Change repos
+          </button>
+          <button type="button" onClick={viewIssues}>
+            View Issues
+          </button>
+          <button type="button" onClick={viewDependabotAlerts}>
+            View Dependabot Alerts
+          </button>
+        </h2>
+      </div>
+    );
+  }
+
   return (
-    <div className={`repositories ${hasChosen ? 'chosen' : ''}`}>
+    <div className="repositories">
       <h2>
-        {hasChosen ? (
-          <>
-            Repositories - {chosenRepos.size} chosen{' '}
-            <button
-              type="button"
-              onClick={() => {
-                setChosenRepos(new Set());
-              }}
-            >
-              Change repos
-            </button>
-            <button type="button" onClick={viewIssues}>
-              View Issues
-            </button>
-            <button type="button" onClick={viewDependabotAlerts}>
-              View Dependabot Alerts
-            </button>
-          </>
-        ) : (
-          <>
-            Repositories - selected: {selected.size} of {repos.length}{' '}
-            <button
-              type="button"
-              onClick={() => {
-                viewIssues();
-                setChosenRepos(new Set([...selected]));
-              }}
-              disabled={!selected || !selected.size}
-            >
-              Fetch Issues
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                viewDependabotAlerts();
-                setChosenRepos(new Set([...selected]));
-              }}
-              disabled={!selected || !selected.size}
-            >
-              Fetch Dependabot Alerts
-            </button>
-          </>
-        )}
+        Repositories - selected: {selected.size} of {repos.length}{' '}
+        <button
+          type="button"
+          onClick={() => {
+            viewIssues();
+            chooseRepos(selected);
+          }}
+          disabled={!selected || !selected.size}
+        >
+          Fetch Issues
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            viewDependabotAlerts();
+            chooseRepos(selected);
+          }}
+          disabled={!selected || !selected.size}
+        >
+          Fetch Dependabot Alerts
+        </button>
       </h2>
-      {!hasChosen ? repoChooser : null}
+      {repoChooser}
     </div>
   );
 }

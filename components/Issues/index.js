@@ -61,7 +61,7 @@ export default function Issues({
   chosenRepos,
   issues,
   setIssues,
-  repos,
+  chosenReposById,
   resetIssues,
 }) {
   const { access_token } = useAuthContext();
@@ -169,13 +169,6 @@ export default function Issues({
     );
   }
 
-  const reposById = repos.reduce((acc, cv) => {
-    if (chosenRepos.has(cv.id)) {
-      acc[cv.id] = cv;
-    }
-    return acc;
-  }, {});
-
   const handleMatchingChange = (e) => {
     setMatching(e.target.value);
 
@@ -234,6 +227,8 @@ export default function Issues({
       return 0;
     });
   };
+
+  const reposById = chosenReposById();
 
   return (
     <div className="issues">

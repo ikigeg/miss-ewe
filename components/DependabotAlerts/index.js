@@ -71,7 +71,7 @@ const query = `
 
 export default function DependabotAlerts({
   chosenRepos,
-  repos,
+  chosenReposById,
   dependabotAlerts,
   setDependabotAlerts,
   resetDependabotAlerts,
@@ -181,13 +181,6 @@ export default function DependabotAlerts({
     );
   }
 
-  const reposById = repos.reduce((acc, cv) => {
-    if (chosenRepos.has(cv.id)) {
-      acc[cv.id] = cv;
-    }
-    return acc;
-  }, {});
-
   const handleMatchingChange = (e) => {
     setMatching(e.target.value);
 
@@ -263,6 +256,8 @@ export default function DependabotAlerts({
       return 0;
     });
   };
+
+  const reposById = chosenReposById();
 
   return (
     <div className="dependabot-alerts">
