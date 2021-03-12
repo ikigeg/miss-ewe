@@ -174,7 +174,7 @@ export default function DependabotAlerts({
       <div className="dependabot-alerts">
         <h2>Dependabot Alerts</h2>
         <div className="loading">
-          <p>Fetching dependabot alerts</p>
+          <p>Fetching dependabot alerts for chosen repositories</p>
           <Loader total={total} fetched={fetched} />
         </div>
       </div>

@@ -162,7 +162,7 @@ export default function Issues({
       <div className="issues">
         <h2>Issues</h2>
         <div className="loading">
-          <p>Fetching issues</p>
+          <p>Fetching issues for chosen repositories</p>
           <Loader total={total} fetched={fetched} />
         </div>
       </div>
