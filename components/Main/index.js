@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FallbackStorage } from '@conclurer/local-storage-fallback';
 
 import { useAuthContext } from '../../context/auth';
@@ -17,18 +17,21 @@ export default function Main() {
   const STORED_REPOS = `repos-${installationId}`;
   const STORED_CHOSEN = `chosen-${installationId}`;
 
-  const [repos, setRepos] = useState(() => {
-    const storedRepos = storage.getItem(STORED_REPOS);
-    return storedRepos !== null ? JSON.parse(storedRepos) : undefined;
-  });
+  const [repos, setRepos] = useState();
+  const [chosenRepos, setChosenRepos] = useState(new Set());
+  const [hasLoaded, setHasLoaded] = useState(false);
 
-  const [chosenRepos, setChosenRepos] = useState(() => {
-    const storedChosen = storage.getItem(STORED_CHOSEN);
-    const storedRepos = storage.getItem(STORED_REPOS);
-    return storedRepos !== null && storedChosen !== null
-      ? new Set(JSON.parse(storedChosen))
-      : new Set();
-  });
+  useEffect(() => {
+    if (installationId) {
+      const storedRepos = storage.getItem(STORED_REPOS);
+      const storedChosen = storage.getItem(STORED_CHOSEN);
+      if (storedRepos !== null && storedChosen !== null) {
+        setRepos(JSON.parse(storedRepos));
+        setChosenRepos(new Set(JSON.parse(storedChosen)));
+      }
+    }
+    setHasLoaded(true);
+  }, [installationId, setRepos, setChosenRepos, setHasLoaded]);
 
   const chosenReposById = () =>
     repos &&
@@ -82,7 +85,7 @@ export default function Main() {
     <div>
       <Installations />
 
-      {installationToken ? (
+      {installationId && installationToken && hasLoaded ? (
         <Repositories
           {...{
             repos,
