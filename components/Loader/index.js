@@ -3,7 +3,11 @@ import { SpinnerDotted } from 'spinners-react';
 
 const Loading = memo(({ total, fetched }) => {
   if (total === fetched) {
-    return null;
+    return (
+      <div>
+        <SpinnerDotted />
+      </div>
+    );
   }
 
   return (
