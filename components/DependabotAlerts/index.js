@@ -49,6 +49,10 @@ const query = `
               vulnerableManifestFilename
               vulnerableRequirements
               vulnerableManifestPath
+              dismisser {
+                login
+                url
+              }
             }
           }
           totalCount
@@ -57,73 +61,6 @@ const query = `
     }
   }
 `;
-
-/*
-{ "ids": ["MDEwOlJlcG9zaXRvcnkxNDc0MTg2NTk="]}
-example output:
-{
-  "data": {
-    "nodes": [
-      {
-        "id": "MDEwOlJlcG9zaXRvcnkxNDc0MTg2NTk=",
-        "name": "starter-typescript",
-        "vulnerabilityAlerts": {
-          "edges": [
-            {
-              "node": {
-                "id": "MDI4OlJlcG9zaXRvcnlWdWxuZXJhYmlsaXR5QWxlcnQyNDcyNzI5MzE=",
-                "createdAt": "2020-04-01T08:54:49Z",
-                "dismissedAt": null,
-                "securityVulnerability": {
-                  "severity": "LOW",
-                  "package": {
-                    "name": "kind-of",
-                    "ecosystem": "NPM"
-                  },
-                  "vulnerableVersionRange": ">= 6.0.0, < 6.0.3",
-                  "advisory": {
-                    "id": "MDE2OlNlY3VyaXR5QWR2aXNvcnlHSFNBLTZjOGYtcXBoZy1xamdw",
-                    "permalink": "https://github.com/advisories/GHSA-6c8f-qphg-qjgp",
-                    "publishedAt": "2020-03-31T15:59:54Z",
-                    "severity": "LOW",
-                    "summary": "Validation Bypass in kind-of",
-                    "withdrawnAt": null,
-                    "description": "Versions of `kind-of` 6.x prior to 6.0.3 are vulnerable to a Validation Bypass. A maliciously crafted object can alter the result of the type check, allowing attackers to bypass the type checking validation. \n\n\n## Recommendation\n\nUpgrade to versions 6.0.3 or later.",
-                    "notificationsPermalink": "https://github.com/advisories/GHSA-6c8f-qphg-qjgp/dependabot",
-                    "origin": "UNSPECIFIED",
-                    "references": [
-                      {
-                        "url": "https://nvd.nist.gov/vuln/detail/CVE-2019-20149"
-                      },
-                      {
-                        "url": "https://github.com/advisories/GHSA-6c8f-qphg-qjgp"
-                      }
-                    ],
-                    "identifiers": [
-                      {
-                        "type": "GHSA",
-                        "value": "GHSA-6c8f-qphg-qjgp"
-                      },
-                      {
-                        "type": "CVE",
-                        "value": "CVE-2019-20149"
-                      }
-                    ]
-                  }
-                },
-                "vulnerableManifestFilename": "package-lock.json",
-                "vulnerableRequirements": "= 6.0.2",
-                "vulnerableManifestPath": "package-lock.json"
-              }
-            }
-          ],
-          "totalCount": 11
-        }
-      }
-    ]
-  }
-}
-*/
 
 export default function DependabotAlerts({
   chosenRepos,
@@ -136,6 +73,7 @@ export default function DependabotAlerts({
 
   const [loading, setLoading] = useState(false);
   const [showMatching, setShowMatching] = useState(false);
+  const [showSelected, setShowSelected] = useState('open');
   const [matching, setMatching] = useState('');
   const [sortBy, setSortBy] = useState('default');
   const [total, setTotal] = useState(0);
@@ -259,23 +197,31 @@ export default function DependabotAlerts({
   };
 
   const visibleDependabotAlerts = () => {
-    if (sortBy === 'default' && !showMatching) {
+    if (sortBy === 'default' && !showMatching && showSelected === 'all') {
       return dependabotAlerts;
     }
 
-    const filtered = showMatching
-      ? dependabotAlerts.filter((alert) => {
-          if (
-            showMatching &&
-            alert.securityVulnerability.package.name
-              .toLowerCase()
-              .includes(matching.toLowerCase())
-          ) {
-            return true;
-          }
-          return false;
-        })
-      : dependabotAlerts;
+    const filtered =
+      showMatching || showSelected !== 'all'
+        ? dependabotAlerts.filter((alert) => {
+            let visible = false;
+            if (showSelected === 'open' && !alert.dismissedAt) {
+              visible = true;
+            }
+            if (showSelected === 'dismissed' && alert.dismissedAt) {
+              visible = true;
+            }
+            if (
+              showMatching &&
+              alert.securityVulnerability.package.name
+                .toLowerCase()
+                .includes(matching.toLowerCase())
+            ) {
+              visible = true;
+            }
+            return visible;
+          })
+        : dependabotAlerts;
 
     if (sortBy === 'default') {
       return filtered;
@@ -324,6 +270,19 @@ export default function DependabotAlerts({
         </button>
       </h2>
       <div className="dependabot-alerts-controls">
+        <div>
+          Show:
+          <select
+            onChange={(e) => {
+              setShowSelected(e.currentTarget.value);
+            }}
+            value={showSelected}
+          >
+            <option value="all">All</option>
+            <option value="open">Open</option>
+            <option value="dismissed">Dismissed</option>
+          </select>
+        </div>
         <div>
           Sort:
           <select

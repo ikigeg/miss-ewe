@@ -8,12 +8,16 @@ import './style.css';
 export default function DependabotAlert({
   id,
   createdAt,
+  dismissedAt,
   repo,
   securityVulnerability,
-  url,
   vulnerableManifestFilename,
+  dismisser,
 }) {
   const [expanded, setExpanded] = useState(false);
+  const url = `${repo.url}/security/dependabot/${vulnerableManifestFilename}/${
+    securityVulnerability.package.name
+  }/${dismissedAt ? 'closed' : 'open'}`;
 
   const prettySeverity = (severity) => {
     let color = 'b1bac4';
@@ -54,7 +58,22 @@ export default function DependabotAlert({
           {securityVulnerability.advisory.summary}
         </div>
         <div className="dependabot-alert-meta">
-          Created {timeago.format(createdAt)} in{' '}
+          {dismissedAt ? (
+            <>
+              Dismissed {timeago.format(dismissedAt)} by{' '}
+              <a
+                className="author-link"
+                href={dismisser && dismisser.url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {dismisser && dismisser.login}
+              </a>
+            </>
+          ) : (
+            <>Created {timeago.format(createdAt)}</>
+          )}{' '}
+          in{' '}
           <a className="repo-link" href={url} target="_blank" rel="noreferrer">
             {repo.name}
           </a>
