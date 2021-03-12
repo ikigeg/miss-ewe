@@ -50,6 +50,9 @@ export default function DependabotAlert({
           </a>
           {prettySeverity(securityVulnerability.severity)}
         </div>
+        <div className="dependabot-alert-summary">
+          {securityVulnerability.advisory.summary}
+        </div>
         <div className="dependabot-alert-meta">
           Created {timeago.format(createdAt)} in{' '}
           <a className="repo-link" href={url} target="_blank" rel="noreferrer">
