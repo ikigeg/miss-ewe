@@ -359,7 +359,7 @@ export default function DependabotAlerts({
               key={`${dependabotAlert.repoId}-${dependabotAlert.id}-${idx}`}
               idx={idx}
               {...dependabotAlert}
-              repo={reposById['MDEwOlJlcG9zaXRvcnkxNDY3NjUxNzI=']}
+              repo={reposById[dependabotAlert.repoId]}
             />
           ))
         : null}
