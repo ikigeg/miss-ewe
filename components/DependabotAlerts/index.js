@@ -4,6 +4,9 @@ import get from 'lodash/get';
 import { useAuthContext } from '../../context/auth';
 import queryGithub from '../../utils/queryGithub';
 import Loader from '../Loader';
+import DependabotAlert from '../DependabotAlert';
+
+import './style.css';
 
 const query = `
   query OpenDependabotAlerts($ids: [ID!]!) {
@@ -124,7 +127,7 @@ example output:
 
 export default function DependabotAlerts({
   chosenRepos,
-  // repos,
+  repos,
   dependabotAlerts,
   setDependabotAlerts,
   resetDependabotAlerts,
@@ -233,12 +236,12 @@ export default function DependabotAlerts({
     );
   }
 
-  // const reposById = repos.reduce((acc, cv) => {
-  //   if (chosenRepos.has(cv.id)) {
-  //     acc[cv.id] = cv;
-  //   }
-  //   return acc;
-  // }, {});
+  const reposById = repos.reduce((acc, cv) => {
+    if (chosenRepos.has(cv.id)) {
+      acc[cv.id] = cv;
+    }
+    return acc;
+  }, {});
 
   const handleMatchingChange = (e) => {
     setMatching(e.target.value);
@@ -264,7 +267,9 @@ export default function DependabotAlerts({
       ? dependabotAlerts.filter((alert) => {
           if (
             showMatching &&
-            alert.title.toLowerCase().includes(matching.toLowerCase())
+            alert.securityVulnerability.package.name
+              .toLowerCase()
+              .includes(matching.toLowerCase())
           ) {
             return true;
           }
@@ -289,10 +294,16 @@ export default function DependabotAlerts({
     }
 
     return filtered.sort((a, b) => {
-      if (a.title.toLowerCase() < b.title.toLowerCase()) {
+      if (
+        a.securityVulnerability.package.name.toLowerCase() <
+        b.securityVulnerability.package.name.toLowerCase()
+      ) {
         return -1;
       }
-      if (a.title.toLowerCase() > b.title.toLowerCase()) {
+      if (
+        a.securityVulnerability.package.name.toLowerCase() >
+        b.securityVulnerability.package.name.toLowerCase()
+      ) {
         return 1;
       }
       return 0;
@@ -343,8 +354,13 @@ export default function DependabotAlerts({
         </div>
       </div>
       {dependabotAlerts && dependabotAlerts.length
-        ? visibleDependabotAlerts().map((alert, idx) => (
-            <div key={idx}>{JSON.stringify(alert)}</div>
+        ? visibleDependabotAlerts().map((dependabotAlert, idx) => (
+            <DependabotAlert
+              key={`${dependabotAlert.repoId}-${dependabotAlert.id}-${idx}`}
+              idx={idx}
+              {...dependabotAlert}
+              repo={reposById['MDEwOlJlcG9zaXRvcnkxNDY3NjUxNzI=']}
+            />
           ))
         : null}
     </div>

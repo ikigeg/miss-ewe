@@ -1,0 +1,69 @@
+.dependabot-alert {
+  padding: 0.4rem 0.8rem;
+  margin: 0.2rem 0;
+  border-bottom: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.dependabot-alert:hover {
+  background: #a2f173;
+}
+
+.dependabot-alert.expanded {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem;
+  background: #efefef;
+  margin: 2rem 0 0.2rem;
+}
+
+.dependabot-alert-link {
+  margin: 0;
+  margin-right: 0.8rem;
+  display: inline-block;
+  vertical-align: middle;
+  text-decoration: none;
+}
+.dependabot-alert-link:hover {
+  text-decoration: underline;
+}
+
+.dependabot-alert-title-severity {
+  display: flex;
+  padding: 0.4rem 0;
+  justify-content: space-between;
+}
+.dependabot-alert-meta {
+  padding: 0.4rem 0;
+  font-size: 1.4rem;
+}
+.dependabot-alert-meta a {
+  text-decoration: none;
+}
+.dependabot-alert-meta a:hover {
+  text-decoration: underline;
+}
+
+.severity {
+  border-radius: 1rem;
+  border-width: 0.1rem;
+  border-style: solid;
+  padding: 0;
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.3rem;
+  padding: 0 0.4rem;
+  font-weight: bold;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.dependabot-alert-body {
+  margin: 0.8rem;
+  border: 0.1rem solid #cacaca;
+  padding: 0.8rem;
+  background: #e2e2e2;
+  border-radius: 0.4rem;
+  font-size: 1.6rem;
+  line-height: 2.2rem;
+}
