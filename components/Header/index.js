@@ -43,7 +43,7 @@ export default function Header({ user, loading, loginId }) {
               />
             </div>
             <div>
-              having problems? <a href={loginUrl}>login again</a>
+              having problems? <a href="/">Reload the page</a>
             </div>
           </>
         ) : null}

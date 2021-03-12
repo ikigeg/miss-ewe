@@ -62,10 +62,6 @@ export default function Main() {
     setInstallationId(key);
   };
 
-  const resetChoice = () => {
-    setInstallationId();
-  };
-
   if (installationId) {
     const installation = installations.installations.filter(
       (i) => i.id === installationId
@@ -91,11 +87,6 @@ export default function Main() {
           >
             <Link style={{ width: '1.8rem', height: '1.8rem' }} />
           </a>
-        </div>
-        <div>
-          <button type="button" onClick={resetChoice}>
-            Pick another
-          </button>
         </div>
       </div>
     );
