@@ -276,6 +276,7 @@ export default function Issues({
             />
           ))
         : null}
+      {fetched > 0 && !issues.length ? <div>No issues found</div> : null}
     </div>
   );
 }
