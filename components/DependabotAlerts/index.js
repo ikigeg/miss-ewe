@@ -90,13 +90,12 @@ export default function DependabotAlerts({
     let allDependabotAlerts = [];
     let done = false;
     let lastIdx = 0;
+    const chosenLength = [...(chosenRepos || [])].length;
 
     const getDependabotAlerts = async () => {
       setLoading(true);
 
       while (!done) {
-        const chosenLength = [...(chosenRepos || [])].length;
-
         if (lastIdx === 0) {
           setTotal(chosenLength);
         }
@@ -143,16 +142,11 @@ export default function DependabotAlerts({
         setFetched(lastIdx);
       }
 
-      lastIdx = 0;
       setDependabotAlerts(allDependabotAlerts || []);
       setLoading(false);
     };
 
-    if (
-      chosenRepos &&
-      chosenRepos.size > 0 &&
-      (!dependabotAlerts || dependabotAlerts.length === 0)
-    ) {
+    if (chosenRepos && chosenRepos.size > 0 && lastIdx < chosenLength) {
       getDependabotAlerts();
     }
   }, [
@@ -162,7 +156,6 @@ export default function DependabotAlerts({
     setLoading,
     setTotal,
     setFetched,
-    dependabotAlerts,
   ]);
 
   if (!chosenRepos || chosenRepos.size === 0) {
@@ -326,6 +319,9 @@ export default function DependabotAlerts({
             />
           ))
         : null}
+      {fetched > 0 && !dependabotAlerts.length ? (
+        <div>No dependabot alerts found</div>
+      ) : null}
     </div>
   );
 }

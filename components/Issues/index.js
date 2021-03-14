@@ -77,13 +77,12 @@ export default function Issues({
     let allIssues = [];
     let done = false;
     let lastIdx = 0;
+    const chosenLength = [...(chosenRepos || [])].length;
 
     const getIssues = async () => {
       setLoading(true);
 
       while (!done) {
-        const chosenLength = [...(chosenRepos || [])].length;
-
         if (lastIdx === 0) {
           setTotal(chosenLength);
         }
@@ -131,16 +130,11 @@ export default function Issues({
         setFetched(lastIdx);
       }
 
-      lastIdx = 0;
       setIssues(allIssues || []);
       setLoading(false);
     };
 
-    if (
-      chosenRepos &&
-      chosenRepos.size > 0 &&
-      (!issues || issues.length === 0)
-    ) {
+    if (chosenRepos && chosenRepos.size > 0 && lastIdx < chosenLength) {
       getIssues();
     }
   }, [
@@ -150,7 +144,6 @@ export default function Issues({
     setLoading,
     setTotal,
     setFetched,
-    issues,
   ]);
 
   if (!chosenRepos || chosenRepos.size === 0) {
