@@ -1,42 +1,11 @@
 import { useEffect, useState } from 'react';
-import get from 'lodash/get';
 
 import { useAuthContext } from '../../context/auth';
-import queryGithub from '../../utils/queryGithub';
+import queryInstallationRepos from '../../utils/queryInstallationRepos';
 import Repository from '../Repository';
 import Loader from '../Loader';
 
 import './style.css';
-
-const query = `
-  query Repos($cursor: String) {
-    viewer {
-      login
-      name
-      repositories(first:100, after: $cursor, orderBy: {field: NAME, direction: ASC}) {
-        totalCount
-        pageInfo {
-          hasNextPage
-        }
-        edges {
-          cursor
-          node {
-            name
-            id
-            url
-            owner {
-              login
-              avatarUrl
-              id
-            }
-            isFork
-            createdAt
-          }
-        }
-      }
-    }
-  }
-`;
 
 export default function Repositories({
   repos,
@@ -48,7 +17,7 @@ export default function Repositories({
   viewIssues,
   viewDependabotAlerts,
 }) {
-  const { installationToken } = useAuthContext();
+  const { access_token, installationId } = useAuthContext();
 
   const [loading, setLoading] = useState(false);
   const [showSelected, setShowSelected] = useState('all');
@@ -62,35 +31,45 @@ export default function Repositories({
   useEffect(() => {
     let allRepos = [];
     let done = false;
-    let cursor = undefined;
+    let page = 0;
 
     const fetchRepos = async () => {
       setLoading(true);
 
       while (!done) {
-        const data = await queryGithub({
-          access_token: installationToken,
-          query,
-          variables: { cursor },
+        const { total_count, repositories } = await queryInstallationRepos({
+          access_token,
+          installationId,
+          page,
         });
 
-        const edges = get(data, 'viewer.repositories.edges', []);
+        if (page === 0) {
+          setTotal(total_count);
+        }
 
-        if (edges.length === 0) {
+        if (total_count === 0 || !repositories || !repositories.length) {
           done = true;
           continue;
         }
 
-        if (!cursor) {
-          const totalCount = get(data, 'viewer.repositories.totalCount', 0);
-          setTotal(totalCount);
-        }
-
-        cursor = edges[edges.length - 1].cursor;
-        allRepos.push(...edges.map((e) => e.node));
+        page += 1;
+        allRepos.push(
+          ...repositories.map((r) => ({
+            name: r.name,
+            id: r.node_id,
+            url: r.html_url,
+            owner: {
+              login: r.owner.login,
+              avatarUrl: r.owner.avatar_url,
+              id: r.owner.node_id,
+            },
+            isFork: r.fork,
+            createdAt: r.created_at,
+          }))
+        );
         setFetched(allRepos.length);
 
-        if (!get(data, 'viewer.repositories.pageInfo.hasNextPage', false)) {
+        if (allRepos.length >= total) {
           done = true;
         }
       }
@@ -102,7 +81,15 @@ export default function Repositories({
     if (!repos && !loading) {
       fetchRepos();
     }
-  }, [installationToken, queryGithub, setLoading, setTotal, setFetched, repos]);
+  }, [
+    installationId,
+    access_token,
+    queryInstallationRepos,
+    setLoading,
+    setTotal,
+    setFetched,
+    repos,
+  ]);
 
   useEffect(() => {
     if (hasChosen) {
@@ -112,7 +99,7 @@ export default function Repositories({
     }
   }, [hasChosen]);
 
-  if (!installationToken || !repos) {
+  if (!installationId || !access_token || !repos) {
     return (
       <div className="repositories">
         <h2>Repositories</h2>
