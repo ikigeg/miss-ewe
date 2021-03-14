@@ -62,7 +62,7 @@ export default function Issues({
   issues,
   setIssues,
   chosenReposById,
-  resetIssues,
+  // resetIssues,
 }) {
   const { access_token } = useAuthContext();
 
@@ -227,14 +227,14 @@ export default function Issues({
     <div className="issues">
       <h2>
         Issues{' '}
-        <button
+        {/* <button
           type="button"
           onClick={() => {
             resetIssues();
           }}
         >
           Refresh
-        </button>
+        </button> */}
       </h2>
       <div className="issue-controls">
         <div>

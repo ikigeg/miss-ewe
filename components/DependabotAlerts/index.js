@@ -74,7 +74,7 @@ export default function DependabotAlerts({
   chosenReposById,
   dependabotAlerts,
   setDependabotAlerts,
-  resetDependabotAlerts,
+  // resetDependabotAlerts,
 }) {
   const { access_token } = useAuthContext();
 
@@ -256,14 +256,14 @@ export default function DependabotAlerts({
     <div className="dependabot-alerts">
       <h2>
         Dependabot Alerts{' '}
-        <button
+        {/* <button
           type="button"
           onClick={() => {
             resetDependabotAlerts();
           }}
         >
           Refresh
-        </button>
+        </button> */}
       </h2>
       <div className="dependabot-alerts-controls">
         <div>
