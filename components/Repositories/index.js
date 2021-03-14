@@ -31,7 +31,7 @@ export default function Repositories({
   useEffect(() => {
     let allRepos = [];
     let done = false;
-    let page = 0;
+    let page = 1;
 
     const fetchRepos = async () => {
       setLoading(true);
@@ -43,7 +43,7 @@ export default function Repositories({
           page,
         });
 
-        if (page === 0) {
+        if (page === 1) {
           setTotal(total_count);
         }
 
@@ -52,24 +52,23 @@ export default function Repositories({
           continue;
         }
 
-        page += 1;
-        allRepos.push(
-          ...repositories.map((r) => ({
-            name: r.name,
-            id: r.node_id,
-            url: r.html_url,
-            owner: {
-              login: r.owner.login,
-              avatarUrl: r.owner.avatar_url,
-              id: r.owner.node_id,
-            },
-            isFork: r.fork,
-            createdAt: r.created_at,
-          }))
-        );
+        const batch = repositories.map((r) => ({
+          name: r.name,
+          id: r.node_id,
+          url: r.html_url,
+          owner: {
+            login: r.owner.login,
+            avatarUrl: r.owner.avatar_url,
+            id: r.owner.node_id,
+          },
+          isFork: r.fork,
+          createdAt: r.created_at,
+        }));
+        allRepos.push(...batch);
         setFetched(allRepos.length);
 
-        if (allRepos.length >= total) {
+        page += 1;
+        if (allRepos.length >= total_count) {
           done = true;
         }
       }
