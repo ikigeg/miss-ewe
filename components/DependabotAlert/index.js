@@ -11,11 +11,11 @@ export default function DependabotAlert({
   dismissedAt,
   repo,
   securityVulnerability,
-  vulnerableManifestFilename,
+  vulnerableManifestPath,
   dismisser,
 }) {
   const [expanded, setExpanded] = useState(false);
-  const url = `${repo.url}/security/dependabot/${vulnerableManifestFilename}/${
+  const url = `${repo.url}/security/dependabot/${vulnerableManifestPath}/${
     securityVulnerability.package.name
   }/${dismissedAt ? 'closed' : 'open'}`;
 
@@ -85,7 +85,7 @@ export default function DependabotAlert({
                 width: '1.8rem',
               }}
             />
-            {vulnerableManifestFilename}
+            {vulnerableManifestPath}
           </span>
         </div>
       </div>
