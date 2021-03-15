@@ -47,6 +47,13 @@ export default function App({ Component, pageProps }) {
                 href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600&family=Open+Sans:wght@300;400;700&display=swap"
                 rel="stylesheet"
               />
+              <meta property="og:title" content="Miss Ewe - Github Helper" />
+              <meta
+                property="og:description"
+                content="Review issues and dependabot alerts for multiple repositories at once"
+              />
+              <meta property="og:type" content="website" />
+              <meta property="og:image" content="/missEweOgMeta.png" />
             </Head>
             <Header {...pageProps} {...props} />
             <Component {...pageProps} {...props} />
